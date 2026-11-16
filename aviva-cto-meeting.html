@@ -768,6 +768,101 @@ body {
   .scorecard { padding: 28px 22px; }
 }
 
+/* ── Ideal Path ── */
+.ideal-path {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: none;
+}
+.ideal-path.show { display: block; }
+.ideal-path-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.ideal-path-subhead {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.ideal-steps { display: flex; flex-direction: column; gap: 10px; }
+.ideal-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.ideal-step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.ideal-step-body { flex: 1; }
+.ideal-step-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.ideal-step-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.55;
+}
+.ideal-step-pts {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-2);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* ── Replay Button ── */
+.replay-wrap {
+  text-align: center;
+  padding: 32px 0 8px;
+  display: none;
+}
+.replay-wrap.show { display: block; }
+.replay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--ink);
+  color: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+.replay-btn:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
 /* ── Cost Reveal Panel ── */
 .cost-reveal {
   background: var(--surface);
@@ -1253,6 +1348,38 @@ body {
       </div>
     </div>
     <div class="scorecard-takeaway" id="scorecardTakeaway"></div>
+
+    <!-- Ideal path reveal -->
+    <div class="ideal-path" id="idealPath">
+      <div class="ideal-path-heading">THE IDEAL PATH</div>
+      <div class="ideal-path-subhead">What 100 / 100 looks like &mdash; and why</div>
+      <div class="ideal-steps">
+        <div class="ideal-step">
+          <div class="ideal-step-num">1</div>
+          <div class="ideal-step-body">
+            <div class="ideal-step-label">Open on Aviva&rsquo;s AI-first agenda, not your roadmap</div>
+            <div class="ideal-step-desc">She requested this meeting the same week as the Palantir announcement. Her first question is whether you understand what it means for her firm &mdash; not whether you have a good product.</div>
+          </div>
+          <div class="ideal-step-pts">+40 pts</div>
+        </div>
+        <div class="ideal-step">
+          <div class="ideal-step-num">2</div>
+          <div class="ideal-step-body">
+            <div class="ideal-step-label">Reference the Palantir partnership directly</div>
+            <div class="ideal-step-desc">&ldquo;Given Aviva&rsquo;s Palantir partnership and the AI-first board mandate &mdash; how is that reshaping your technology stack priorities this year?&rdquo; Specific beats generic. It tells her you&rsquo;ve done the work.</div>
+          </div>
+          <div class="ideal-step-pts">+40 pts</div>
+        </div>
+        <div class="ideal-step">
+          <div class="ideal-step-num">3</div>
+          <div class="ideal-step-body">
+            <div class="ideal-step-label">Walk in with high, calibrated confidence</div>
+            <div class="ideal-step-desc">With the board mandate, CTO consolidation pattern, L&amp;G competitive threat, and budget freeze mapped &mdash; high confidence is not arrogance. It&rsquo;s what the intel earns you.</div>
+          </div>
+          <div class="ideal-step-pts">+20 pts</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION 12: COST REVEAL PANEL -->
@@ -1291,6 +1418,14 @@ body {
       <span class="skill-tag">Web Search plugin</span>
       <span class="skill-tag">GKnowledge connector</span>
     </div>
+  </div>
+
+  <!-- SECTION 14: REPLAY -->
+  <div class="replay-wrap" id="replayWrap">
+    <button class="replay-btn" onclick="resetActivity()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+      Try again
+    </button>
   </div>
 
 </div><!-- end page-wrap -->
@@ -1758,6 +1893,12 @@ function showScorecard() {
   }
   document.getElementById('scorecardTakeaway').textContent = takeaway;
 
+  var ip = document.getElementById('idealPath');
+  ip.classList.add('show');
+  setTimeout(function() {
+    gsap.fromTo(ip, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+  }, 900);
+
   showCostReveal(final);
 
   setTimeout(function() {
@@ -1801,6 +1942,10 @@ function showCostReveal(final) {
   var ws = document.getElementById('workshopStrip');
   ws.classList.add('show');
   gsap.fromTo(ws, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.6 });
+
+  var rw = document.getElementById('replayWrap');
+  rw.classList.add('show');
+  gsap.fromTo(rw, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', delay: 0.9 });
 }
 
 // ── RESET ──
@@ -1877,6 +2022,12 @@ function resetActivity() {
 
   var ws = document.getElementById('workshopStrip');
   ws.classList.remove('show');
+
+  var ip = document.getElementById('idealPath');
+  ip.classList.remove('show');
+
+  var rw = document.getElementById('replayWrap');
+  rw.classList.remove('show');
 
   for (var i = 0; i < 3; i++) {
     var locked = document.getElementById('clueLocked' + i);
