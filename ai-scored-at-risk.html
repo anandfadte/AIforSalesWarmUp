@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI scored it at-risk. What would you do?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --surface-2: #F1F1ED;
+  --ink: #172A3A;
+  --muted: #5E6E7B;
+  --line: #E2E2DC;
+  --accent: #0B6B61;
+  --accent-2: #0E8578;
+  --accent-soft: #E7F2F0;
+  --warn: #B45309;
+  --warn-bg: #FFFBEB;
+  --warn-border: #F59E0B;
+  --warn-dark: #78350F;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Public Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+}
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+@media (max-width: 700px) {
+  .page-wrap { padding: 32px 20px; }
+}
+
+/* ── Typography ── */
+.fraunces { font-family: 'Fraunces', serif; }
+.eyebrow {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.muted { color: var(--muted); }
+
+/* ── Page Header ── */
+.page-header { text-align: center; margin-bottom: 40px; }
+.page-header .eyebrow { margin-bottom: 16px; }
+.page-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.page-subtitle {
+  font-size: clamp(16px, 2.5vw, 21px);
+  color: var(--muted);
+  max-width: 640px;
+  margin: 0 auto;
+  font-weight: 400;
+}
+
+/* ── Context Bar ── */
+.context-bar {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* ── Timer Row ── */
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.timer-display {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 110px;
+  transition: color 0.4s;
+}
+.timer-display.urgent { color: #DC2626; }
+.timer-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-timer {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-timer:hover { background: var(--surface-2); border-color: var(--accent); }
+.btn-reset-activity {
+  margin-left: auto;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-reset-activity:hover { background: var(--surface-2); color: var(--ink); }
+
+/* ── Scenario Card ── */
+.scenario-card {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 32px;
+}
+.scenario-card .eyebrow { color: #7DD3C8; margin-bottom: 14px; }
+.scenario-card p { font-size: 16px; line-height: 1.75; opacity: 0.9; }
+.scenario-card strong { color: #fff; font-weight: 700; }
+.scenario-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  opacity: 0.4;
+  font-style: italic;
+}
+@media (max-width: 700px) {
+  .scenario-card { padding: 24px 22px; }
+}
+
+/* ── Split View ── */
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+@media (max-width: 700px) {
+  .split-view { grid-template-columns: 1fr; }
+}
+.lens-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.lens-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.lens-basis {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+}
+.lens-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 16px 22px 12px;
+}
+.lens-body { padding: 0 22px 22px; flex: 1; }
+
+/* AI Lens signals */
+.signal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.signal-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.signal-item.top {
+  background: var(--accent-soft);
+  border-color: #A8D5CF;
+}
+.signal-rank {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 2px 7px;
+  border-radius: 20px;
+  min-width: 28px;
+  text-align: center;
+}
+.signal-item.top .signal-rank { background: var(--accent); color: #fff; }
+.signal-score {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 36px;
+}
+.signal-item.top .signal-score { color: var(--accent); }
+.signal-info { flex: 1; }
+.signal-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.signal-sublabel { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.signal-item.top .signal-sublabel { color: var(--accent-2); font-weight: 600; }
+.lens-footer {
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  padding: 14px 22px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.lens-footer strong { color: var(--ink); }
+
+/* Human Lens content */
+.human-lens-content { display: flex; flex-direction: column; gap: 16px; }
+.human-quote {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--ink);
+  border-left: 4px solid var(--accent);
+  padding-left: 18px;
+  margin: 0;
+}
+.human-note {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.human-footer-text { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+/* Lock overlay */
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 42, 58, 0.78);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px;
+  text-align: center;
+  border-radius: 14px;
+  z-index: 10;
+}
+.lock-icon-circle {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lock-overlay-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+.lock-overlay-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  max-width: 220px;
+  line-height: 1.5;
+}
+.human-lens-wrap { position: relative; display: flex; flex-direction: column; flex: 1; }
+
+/* Mario-style gold button */
+.btn-mario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  background: #F59E0B;
+  color: #1C1200;
+  box-shadow: 0 4px 0 #92400E;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+  letter-spacing: 0.01em;
+}
+.btn-mario:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #92400E; }
+.btn-mario:active { transform: translateY(2px); box-shadow: 0 2px 0 #92400E; }
+
+/* ── Cost Hero Banner ── */
+.cost-hero {
+  background: var(--accent-soft);
+  border: 1px solid #A8D5CF;
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-top: 48px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cost-hero-left { flex: 1; min-width: 200px; }
+.cost-hero-left .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.cost-hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.cost-hero-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.cost-hero-pill {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  padding: 18px 24px;
+  text-align: center;
+  min-width: 140px;
+}
+.cost-hero-pill-label { font-size: 11px; font-weight: 700; opacity: 0.75; letter-spacing: 0.08em; text-transform: uppercase; }
+.cost-hero-pill-value {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.cost-hero-pill-note { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+/* ── Clue Grid ── */
+.clue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+@media (max-width: 700px) {
+  .clue-grid { grid-template-columns: 1fr; }
+}
+.clue-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.clue-card.unlocked { border-color: var(--accent); }
+.clue-locked { padding: 22px 20px; display: flex; flex-direction: column; gap: 12px; }
+.clue-revealed { padding: 22px 20px; display: none; flex-direction: column; gap: 12px; }
+.clue-revealed.show { display: flex; }
+.clue-category {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.clue-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clue-hint {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.clue-cost-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.clue-finding {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+.clue-unlocked-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: none;
+}
+.clue-unlocked-label.show { display: block; }
+
+/* ── Score Tracker ── */
+.score-tracker {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 24px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.score-tracker.visible { opacity: 1; pointer-events: auto; }
+.tracker-score-box {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.tracker-score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.tracker-score-denom {
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.tracker-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+}
+.tracker-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tracker-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all 0.3s;
+  position: relative;
+}
+.tracker-dot.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.tracker-dot.done {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.tracker-dot-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.tracker-line {
+  height: 2px;
+  width: 40px;
+  background: var(--line);
+  transition: background 0.5s;
+}
+.tracker-line.done-line { background: var(--accent); }
+.tracker-step-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.tracker-step.done-step .tracker-step-label { color: var(--accent); }
+.tracker-pts {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  display: none;
+}
+.tracker-step.done-step .tracker-pts { display: inline; }
+@media (max-width: 600px) {
+  .tracker-line { width: 20px; }
+  .tracker-step-label { display: none; }
+}
+
+/* ── Step Sections ── */
+.step-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 24px;
+  opacity: 0;
+  display: none;
+}
+.step-section.show { display: block; }
+@media (max-width: 700px) {
+  .step-section { padding: 24px 22px; }
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.step-badge {
+  width: 36px;
+  height: 36px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.step-header-text .eyebrow { margin-bottom: 2px; }
+.step-title {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.choice-grid { display: flex; flex-direction: column; gap: 12px; }
+.choice-btn {
+  width: 100%;
+  text-align: left;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  font-family: 'Public Sans', sans-serif;
+}
+.choice-btn:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-2px); }
+.choice-btn.selected-correct {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.choice-btn.selected-wrong {
+  border-color: var(--warn-border);
+  background: var(--warn-bg);
+}
+.choice-btn-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.choice-btn-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.choice-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.choice-btn.selected-correct .choice-key { background: var(--accent); color: #fff; }
+.choice-btn.selected-wrong .choice-key { background: var(--warn-border); color: #fff; }
+.feedback-box {
+  margin-top: 16px;
+  padding: 18px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+  display: none;
+  border-left: 4px solid;
+}
+.feedback-box.correct {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.feedback-box.wrong {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+  color: var(--warn-dark);
+}
+.feedback-box.show { display: block; }
+.reconsider-nudge {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  display: none;
+}
+.reconsider-nudge.show { display: block; }
+
+/* ── Scorecard ── */
+.scorecard {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 24px;
+  display: none;
+}
+.scorecard.show { display: block; }
+.scorecard-header { text-align: center; margin-bottom: 32px; }
+.scorecard-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7DD3C8;
+  margin-bottom: 12px;
+}
+.scorecard-num-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+.scorecard-num {
+  font-family: 'Fraunces', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.scorecard-denom {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+}
+.scorecard-bar-wrap {
+  height: 8px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 20px;
+  margin: 20px auto 16px;
+  max-width: 400px;
+  overflow: hidden;
+}
+.scorecard-bar-fill {
+  height: 100%;
+  background: var(--accent-2);
+  border-radius: 20px;
+  width: 0%;
+  transition: width 0.8s ease;
+}
+.scorecard-tier-label {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.scorecard-tier-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+.score-breakdown {
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+}
+.breakdown-row.total-row {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 10px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+}
+.breakdown-row .pts-val { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: #7DD3C8; }
+.breakdown-row.penalty-row .pts-val { color: #FCA5A5; }
+.breakdown-row.total-row .pts-val { color: #fff; }
+.scorecard-takeaway {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 18px 22px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+  line-height: 1.65;
+}
+@media (max-width: 700px) {
+  .scorecard { padding: 28px 22px; }
+}
+
+/* ── Cost Reveal Panel ── */
+.cost-reveal {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 48px;
+  display: none;
+}
+.cost-reveal.show { display: block; }
+.cost-reveal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.cost-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 700px) {
+  .cost-cols { grid-template-columns: 1fr; }
+  .cost-reveal { padding: 24px 22px; }
+}
+.cost-col {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 20px 20px;
+}
+.cost-col-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.cost-col-value {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.cost-col-value.positive { color: var(--accent); }
+.cost-col-value.negative { color: #DC2626; }
+.cost-col-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.cost-insight {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+.spin {
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- SECTION 1: PAGE HEADER -->
+  <div class="page-header">
+    <div class="eyebrow">WARM-UP &middot; 3 MINUTES &middot; AI FOR SALES LEADERSHIP</div>
+    <h1 class="page-title fraunces">AI scored it at-risk.<br>What would you do?</h1>
+    <p class="page-subtitle">A $1.8M renewal has just been flagged critical by your AI health scoring platform. You have 3 minutes and the data in front of you. Make the call.</p>
+  </div>
+
+  <!-- SECTION 2: CONTEXT BAR -->
+  <div class="context-bar">
+    You are the CRO at a B2B SaaS company. <strong>Meridian Healthcare</strong> is your largest anchor account &mdash; $1.8M ARR, 4-year relationship, 3 executive sponsors. Your AI customer health platform has just dropped their score to <strong>34/100</strong> and auto-generated a &ldquo;Critical &mdash; Immediate Action Required&rdquo; alert. Renewal is in <strong>11 weeks</strong>. The save playbook is one click away.
+  </div>
+
+  <!-- SECTION 3: TIMER ROW -->
+  <div class="timer-row">
+    <div class="timer-display fraunces" id="timerDisplay">3:00</div>
+    <div class="timer-btns">
+      <button class="btn-timer" id="btnTimerStart" onclick="timerStart()">Start</button>
+      <button class="btn-timer" id="btnTimerPause" onclick="timerPause()" style="display:none">Pause</button>
+      <button class="btn-timer" onclick="timerReset()">Reset</button>
+    </div>
+    <button class="btn-reset-activity" onclick="resetActivity()">&#8635; Reset Activity</button>
+  </div>
+
+  <!-- SECTION 4: SCENARIO CARD -->
+  <div class="scenario-card">
+    <div class="eyebrow">AI HEALTH ALERT &middot; MERIDIAN HEALTHCARE</div>
+    <p>Your AI platform has analysed 90 days of behavioural data across Meridian Healthcare&rsquo;s 312-seat deployment. Customer health score: <strong>34 / 100 &mdash; Critical.</strong> Login frequency is down 42%. Only 3 of 11 contracted modules are active (down from 8). Support tickets have risen 180%. No executive sponsor meeting has been logged in 7 months. The platform recommendation: trigger the full save playbook, escalate to CRO, and prepare a retention discount offer of up to 15%.</p>
+    <p class="scenario-hint">Review the AI analysis on the left. The human finding is locked &mdash; reveal it when you are ready.</p>
+  </div>
+
+  <!-- SECTION 5: SPLIT VIEW -->
+  <div class="split-view">
+
+    <!-- AI Lens -->
+    <div class="lens-card">
+      <div class="lens-header">
+        <div class="eyebrow">AI LENS</div>
+        <div class="lens-basis">Basis: Behavioural analytics</div>
+      </div>
+      <div class="lens-title fraunces">What the platform sees</div>
+      <div class="lens-body">
+        <ul class="signal-list">
+          <li class="signal-item top">
+            <span class="signal-rank">#1</span>
+            <span class="signal-score">34</span>
+            <div class="signal-info">
+              <div class="signal-label">Login activity</div>
+              <div class="signal-sublabel">AI Top Signal: Critical drop</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#2</span>
+            <span class="signal-score">27</span>
+            <div class="signal-info">
+              <div class="signal-label">Module adoption</div>
+              <div class="signal-sublabel">Score: 27</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#3</span>
+            <span class="signal-score">18</span>
+            <div class="signal-info">
+              <div class="signal-label">Support ticket volume</div>
+              <div class="signal-sublabel">Score: 18</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#4</span>
+            <span class="signal-score">12</span>
+            <div class="signal-info">
+              <div class="signal-label">Exec engagement</div>
+              <div class="signal-sublabel">Score: 12</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="lens-footer">
+        <strong>AI Top Signal: Login activity collapse</strong><br>
+        The platform flags engagement drop as the strongest churn predictor.
+      </div>
+    </div>
+
+    <!-- Human Lens -->
+    <div class="lens-card">
+      <div class="human-lens-wrap">
+        <div class="lens-header">
+          <div class="eyebrow">HUMAN LENS</div>
+          <div class="lens-basis">Basis: Relationship + org intelligence</div>
+        </div>
+        <div class="lens-title fraunces">What actually happened</div>
+        <div class="lens-body">
+          <div class="human-lens-content">
+            <blockquote class="human-quote">
+              &ldquo;Meridian ran a planned IT consolidation. Active users dropped by design. The new CIO came from a firm where our platform was core infrastructure. The support spike is migration work &mdash; they are going deeper, not leaving.&rdquo;
+            </blockquote>
+            <div class="human-note">
+              AI counted seat activity. It could not see the org change, the new CIO&rsquo;s history, or the informal expansion conversation already in progress with the CFO.
+            </div>
+          </div>
+        </div>
+        <div class="lens-footer">
+          <span class="human-footer-text">The signal was real. The interpretation was wrong.</span>
+        </div>
+
+        <!-- Lock overlay -->
+        <div class="lock-overlay" id="lockOverlay">
+          <div class="lock-icon-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="lock-overlay-title fraunces">Human finding</div>
+          <div class="lock-overlay-desc">See what your team actually discovered when they dug into this account.</div>
+          <button class="btn-mario" id="btnRevealHuman" onclick="unlockHumanLensManual(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Reveal the finding
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end split-view -->
+
+  <!-- SECTION 6: AI COST HERO BANNER -->
+  <div class="cost-hero">
+    <div class="cost-hero-left">
+      <div class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+        AI-POWERED &middot; REAL COST
+      </div>
+      <div class="cost-hero-title fraunces">Want AI to surface more account context?</div>
+      <div class="cost-hero-desc">Each question below is answered by AI &mdash; the model runs, tokens are consumed. The cost is tiny but real. Total shown at the end.</div>
+    </div>
+    <div class="cost-hero-pill">
+      <div class="cost-hero-pill-label">Per question</div>
+      <div class="cost-hero-pill-value fraunces">~$0.001</div>
+      <div class="cost-hero-pill-note">&minus;5 pts each</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: CLUE GRID -->
+  <div class="clue-grid">
+
+    <!-- Clue 1 -->
+    <div class="clue-card" id="clueCard0">
+      <div class="clue-locked" id="clueLocked0">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          Account Intelligence
+        </div>
+        <div class="clue-hint">What do Meridian&rsquo;s support tickets actually show?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn0" onclick="unlockClue(0)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask AI
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed0">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          Account Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Of 847 support tickets in the last 90 days, 91% are tagged &ldquo;migration&rdquo; or &ldquo;configuration&rdquo; &mdash; consistent with a planned platform deepening. Only 6% relate to product defects or dissatisfaction. This pattern matches accounts that go on to expand, not churn.</div>
+      </div>
+    </div>
+
+    <!-- Clue 2 -->
+    <div class="clue-card" id="clueCard1">
+      <div class="clue-locked" id="clueLocked1">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          Leadership Intelligence
+        </div>
+        <div class="clue-hint">What is the new CIO&rsquo;s professional background?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn1" onclick="unlockClue(1)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask AI
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed1">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          Leadership Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Sarah Chen joined Meridian 6 weeks ago from Apex Consulting, where she led a 5-year digital transformation using platforms identical in category to yours. She has publicly spoken about standardising on fewer, deeper vendor relationships. No save motion has been triggered yet &mdash; she has not been contacted.</div>
+      </div>
+    </div>
+
+    <!-- Clue 3 -->
+    <div class="clue-card" id="clueCard2">
+      <div class="clue-locked" id="clueLocked2">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          Benchmark Intelligence
+        </div>
+        <div class="clue-hint">What is the health score norm for accounts in IT consolidation?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn2" onclick="unlockClue(2)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask AI
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed2">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          Benchmark Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Across 340 accounts in your portfolio that underwent IT consolidation in the past 3 years, average health scores dropped 31&ndash;44% during the consolidation window (typically 60&ndash;120 days). Post-consolidation, 78% returned to previous score bands. False-positive churn flags in this cohort: 67%.</div>
+      </div>
+    </div>
+
+  </div><!-- end clue-grid -->
+
+  <!-- SCORE TRACKER -->
+  <div class="score-tracker" id="scoreTracker">
+    <div class="tracker-score-box">
+      <span class="tracker-score-num" id="trackerScoreNum">0</span>
+      <span class="tracker-score-denom" id="trackerDenom">/ 100</span>
+    </div>
+    <div class="tracker-steps">
+      <div class="tracker-step" id="trackerStep1">
+        <div class="tracker-dot" id="trackerDot1">
+          1
+          <span class="tracker-dot-pulse" id="trackerPulse1" style="display:none"></span>
+        </div>
+        <span class="tracker-step-label">Step 1</span>
+        <span class="tracker-pts" id="trackerPts1"></span>
+      </div>
+      <div class="tracker-line" id="trackerLine1"></div>
+      <div class="tracker-step" id="trackerStep2">
+        <div class="tracker-dot" id="trackerDot2">2<span class="tracker-dot-pulse" id="trackerPulse2" style="display:none"></span></div>
+        <span class="tracker-step-label">Step 2</span>
+        <span class="tracker-pts" id="trackerPts2"></span>
+      </div>
+      <div class="tracker-line" id="trackerLine2"></div>
+      <div class="tracker-step" id="trackerStep3">
+        <div class="tracker-dot" id="trackerDot3">3<span class="tracker-dot-pulse" id="trackerPulse3" style="display:none"></span></div>
+        <span class="tracker-step-label">Step 3</span>
+        <span class="tracker-pts" id="trackerPts3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: STEP 1 -->
+  <div class="step-section" id="step1Section">
+    <div class="step-header">
+      <div class="step-badge">1</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Your Call</div>
+        <div class="step-title fraunces">What do you do with Meridian?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="decisionA" onclick="chooseDecision('A')">
+        <div class="choice-btn-label"><span class="choice-key">A</span> Trigger the full save playbook</div>
+        <div class="choice-btn-desc">Assign a save pod, offer up to 15% retention discount, escalate to executive sponsor. The AI flagged it &mdash; act on it.</div>
+      </button>
+      <button class="choice-btn" id="decisionB" onclick="chooseDecision('B')">
+        <div class="choice-btn-label"><span class="choice-key">B</span> Hold the save motion &mdash; pursue expansion</div>
+        <div class="choice-btn-desc">Suppress the AI alert. Treat this as an expansion opportunity. Engage at the CIO level before the renewal conversation begins.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="decisionFeedback"></div>
+    <div class="reconsider-nudge" id="reconsiderNudge">Consider reconsidering &mdash; the context may change your read.</div>
+  </div>
+
+  <!-- SECTION 9: STEP 2 -->
+  <div class="step-section" id="step2Section">
+    <div class="step-header">
+      <div class="step-badge">2</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Your Move</div>
+        <div class="step-title fraunces">What is your first action?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="actionA" onclick="chooseAction('A')">
+        <div class="choice-btn-label"><span class="choice-key">A</span> Call the CFO directly</div>
+        <div class="choice-btn-desc">You have a 4-year relationship. Use it. Get a read on renewal intent before anything else moves.</div>
+      </button>
+      <button class="choice-btn" id="actionB" onclick="chooseAction('B')">
+        <div class="choice-btn-label"><span class="choice-key">B</span> Research the new CIO &mdash; get a warm introduction, schedule an executive briefing</div>
+        <div class="choice-btn-desc">Before any renewal conversation, establish a relationship with the new economic buyer. Lead with her strategic agenda, not your renewal timeline.</div>
+      </button>
+      <button class="choice-btn" id="actionC" onclick="chooseAction('C')">
+        <div class="choice-btn-label"><span class="choice-key">C</span> Review the full support ticket log before acting</div>
+        <div class="choice-btn-desc">Understand the data completely before making any external move. Know the account cold.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="actionFeedback"></div>
+  </div>
+
+  <!-- SECTION 10: STEP 3 -->
+  <div class="step-section" id="step3Section">
+    <div class="step-header">
+      <div class="step-badge">3</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Honest Check</div>
+        <div class="step-title fraunces">How confident are you, really?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="confHigh" onclick="chooseConfidence('high')">
+        <div class="choice-btn-label"><span class="choice-key">&#10003;</span> Yes, I am confident</div>
+        <div class="choice-btn-desc">The evidence is clear enough. I would act on this read.</div>
+      </button>
+      <button class="choice-btn" id="confLow" onclick="chooseConfidence('low')">
+        <div class="choice-btn-label"><span class="choice-key">?</span> Not quite &mdash; I would want one more check</div>
+        <div class="choice-btn-desc">I would want to validate before fully committing.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="confidenceFeedback"></div>
+  </div>
+
+  <!-- SECTION 11: SCORECARD -->
+  <div class="scorecard" id="scorecard">
+    <div class="scorecard-header">
+      <div class="scorecard-eyebrow">YOUR FINAL SCORE</div>
+      <div class="scorecard-num-row">
+        <span class="scorecard-num fraunces" id="scorecardNum">0</span>
+        <span class="scorecard-denom fraunces" id="scorecardDenom">/ 100</span>
+      </div>
+      <div class="scorecard-bar-wrap">
+        <div class="scorecard-bar-fill" id="scorecardBarFill"></div>
+      </div>
+      <div class="scorecard-tier-label fraunces" id="scorecardTierLabel"></div>
+      <div class="scorecard-tier-desc" id="scorecardTierDesc"></div>
+    </div>
+    <div class="score-breakdown">
+      <div class="breakdown-row" id="bdRow1">
+        <span id="bdLabel1">Step 1</span>
+        <span class="pts-val" id="bdVal1">+0</span>
+      </div>
+      <div class="breakdown-row" id="bdRow2">
+        <span id="bdLabel2">Step 2</span>
+        <span class="pts-val" id="bdVal2">+0</span>
+      </div>
+      <div class="breakdown-row" id="bdRow3">
+        <span id="bdLabel3">Step 3</span>
+        <span class="pts-val" id="bdVal3">+0</span>
+      </div>
+      <div class="breakdown-row penalty-row" id="bdRowClue" style="display:none">
+        <span id="bdLabelClue">Clues used</span>
+        <span class="pts-val" id="bdValClue"></span>
+      </div>
+      <div class="breakdown-row total-row">
+        <span>Total</span>
+        <span class="pts-val" id="bdTotal">0</span>
+      </div>
+    </div>
+    <div class="scorecard-takeaway" id="scorecardTakeaway"></div>
+  </div>
+
+  <!-- SECTION 12: COST REVEAL PANEL -->
+  <div class="cost-reveal" id="costReveal">
+    <div class="cost-reveal-title fraunces">The real cost breakdown</div>
+    <div class="cost-cols">
+      <div class="cost-col">
+        <div class="cost-col-label">Human time invested</div>
+        <div class="cost-col-value fraunces" id="costHumanTime">15 min</div>
+        <div class="cost-col-note">Discovery call prep + relationship mapping</div>
+      </div>
+      <div class="cost-col">
+        <div class="cost-col-label">AI analysis cost</div>
+        <div class="cost-col-value fraunces">$0.003</div>
+        <div class="cost-col-note">90-day behavioural scan across 312 seats</div>
+      </div>
+      <div class="cost-col">
+        <div class="cost-col-label">Revenue outcome</div>
+        <div class="cost-col-value fraunces" id="costRevOutcome"></div>
+        <div class="cost-col-note" id="costRevNote"></div>
+      </div>
+    </div>
+    <div class="cost-insight" id="costInsight"></div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// ── State ──
+var score = 0, cluesUsed = 0, step1Pts = 0, step2Pts = 0, confidencePts = 0;
+var decision = null, actionChoice = null, confidence = null, humanUnlocked = false;
+var step2Marked = false, step3Marked = false;
+var timerSeconds = 180, timerRunning = false, timerInterval = null;
+var clueUnlocking = [false, false, false];
+var clueUnlocked = [false, false, false];
+var displayedScore = 0;
+
+function getFinalScore() {
+  return Math.max(0, score);
+}
+
+function getMaxScore() {
+  return 100 - cluesUsed * 5;
+}
+
+// ── Timer ──
+function timerStart() {
+  if (timerRunning) return;
+  timerRunning = true;
+  document.getElementById('btnTimerStart').style.display = 'none';
+  document.getElementById('btnTimerPause').style.display = '';
+  timerInterval = setInterval(function() {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      timerSeconds = 0;
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btnTimerPause').style.display = 'none';
+      document.getElementById('btnTimerStart').style.display = '';
+    }
+  }, 1000);
+}
+
+function timerPause() {
+  if (!timerRunning) return;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  document.getElementById('btnTimerPause').style.display = 'none';
+  document.getElementById('btnTimerStart').style.display = '';
+}
+
+function timerReset() {
+  timerPause();
+  timerSeconds = 180;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  var m = Math.floor(timerSeconds / 60);
+  var s = timerSeconds % 60;
+  var str = m + ':' + (s < 10 ? '0' : '') + s;
+  var el = document.getElementById('timerDisplay');
+  el.textContent = str;
+  if (timerSeconds < 60) {
+    el.classList.add('urgent');
+  } else {
+    el.classList.remove('urgent');
+  }
+}
+
+// ── Particles ──
+function spawnParticles(fromEl) {
+  var rect = fromEl.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+  var chars = ['★','★','✦','◆','●','✦','★','◆'];
+  var colors = ['#F59E0B','#0B6B61','#B45309','#84CC16','#FBBF24','#0E8578','#F59E0B','#0B6B61'];
+  for (var i = 0; i < 14; i++) {
+    var p = document.createElement('span');
+    p.textContent = chars[i % chars.length];
+    p.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;font-size:14px;color:' + colors[i % colors.length] + ';pointer-events:none;z-index:9999;user-select:none;';
+    document.body.appendChild(p);
+    var angle = (i / 14) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+    var dist = 60 + Math.random() * 60;
+    var tx = Math.cos(angle) * dist;
+    var ty = Math.sin(angle) * dist - 20;
+    var dur = 0.65 + Math.random() * 0.45;
+    gsap.to(p, { x: tx, y: ty, rotation: (Math.random() - 0.5) * 360, opacity: 0, duration: dur, ease: 'power2.out', onComplete: function(el) { el.remove(); }, onCompleteParams: [p] });
+  }
+}
+
+function spawnPtsBadge(fromEl, pts) {
+  var rect = fromEl.getBoundingClientRect();
+  var badge = document.createElement('div');
+  badge.textContent = '+' + pts + ' pts';
+  badge.style.cssText = 'position:fixed;left:' + (rect.left + rect.width / 2 - 30) + 'px;top:' + (rect.top - 10) + 'px;background:#F59E0B;color:#1C1200;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(badge);
+  gsap.fromTo(badge, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2.5)', onComplete: function() {
+    gsap.to(badge, { y: -30, opacity: 0, duration: 0.6, delay: 1.1, ease: 'power2.in', onComplete: function() { badge.remove(); } });
+  }});
+}
+
+function spawnMinusBadge(fromEl, pts) {
+  var rect = fromEl.getBoundingClientRect();
+  var badge = document.createElement('div');
+  badge.textContent = '−5 pts';
+  badge.style.cssText = 'position:fixed;left:' + (rect.left + rect.width / 2 - 25) + 'px;top:' + (rect.top) + 'px;background:#DC2626;color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(badge);
+  gsap.fromTo(badge, { opacity: 1, y: 0 }, { y: 30, opacity: 0, duration: 0.9, ease: 'power2.in', onComplete: function() { badge.remove(); } });
+}
+
+// ── Score animation ──
+var scoreAnimObj = { val: 0 };
+function animateScore(newVal) {
+  var el = document.getElementById('trackerScoreNum');
+  gsap.to(scoreAnimObj, { val: newVal, duration: 0.5, ease: 'power2.out', onUpdate: function() {
+    el.textContent = Math.round(scoreAnimObj.val);
+  }});
+}
+
+function updateMaxDisplay() {
+  document.getElementById('trackerDenom').textContent = '/ ' + getMaxScore();
+}
+
+// ── Tracker ──
+function showTracker() {
+  var el = document.getElementById('scoreTracker');
+  el.classList.add('visible');
+}
+
+function markTrackerStep(step, pts) {
+  var dot = document.getElementById('trackerDot' + step);
+  var ptsEl = document.getElementById('trackerPts' + step);
+  var stepEl = document.getElementById('trackerStep' + step);
+  var pulseEl = document.getElementById('trackerPulse' + step);
+  dot.classList.remove('active');
+  dot.classList.add('done');
+  dot.textContent = '✓';
+  if (pulseEl) pulseEl.style.display = 'none';
+  if (pts !== undefined && pts !== null) {
+    ptsEl.textContent = '+' + pts;
+  }
+  stepEl.classList.add('done-step');
+  if (step < 3) {
+    var line = document.getElementById('trackerLine' + step);
+    if (line) line.classList.add('done-line');
+    var nextDot = document.getElementById('trackerDot' + (step + 1));
+    var nextPulse = document.getElementById('trackerPulse' + (step + 1));
+    if (nextDot) {
+      nextDot.classList.add('active');
+      if (nextPulse) nextPulse.style.display = '';
+    }
+  }
+}
+
+function activateTrackerStep(step) {
+  var dot = document.getElementById('trackerDot' + step);
+  var pulseEl = document.getElementById('trackerPulse' + step);
+  dot.classList.add('active');
+  if (pulseEl) pulseEl.style.display = '';
+}
+
+// ── Reveal section ──
+function revealSection(id) {
+  var el = document.getElementById(id);
+  el.classList.add('show');
+  gsap.fromTo(el, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+  var btns = el.querySelectorAll('.choice-btn');
+  if (btns.length) {
+    gsap.fromTo(btns, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.5)', stagger: 0.1 });
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── STEP 1: Decision ──
+function chooseDecision(choice) {
+  if (choice === decision) return;
+
+  score -= step1Pts;
+  score -= step2Pts;
+  score -= confidencePts;
+  step2Pts = 0;
+  confidencePts = 0;
+
+  if (decision !== null) {
+    var prevBtnA = document.getElementById('decisionA');
+    var prevBtnB = document.getElementById('decisionB');
+    prevBtnA.classList.remove('selected-correct', 'selected-wrong');
+    prevBtnB.classList.remove('selected-correct', 'selected-wrong');
+  }
+
+  decision = choice;
+  var feedback = document.getElementById('decisionFeedback');
+  var nudge = document.getElementById('reconsiderNudge');
+
+  if (choice === 'B') {
+    step1Pts = 40;
+    score += 40;
+    document.getElementById('decisionB').classList.add('selected-correct');
+    document.getElementById('decisionA').classList.remove('selected-correct', 'selected-wrong');
+    feedback.className = 'feedback-box correct show';
+    feedback.textContent = 'Correct. The signals were real but the context inverted their meaning. This is exactly the gap AI health scoring cannot close without human intelligence.';
+    nudge.classList.remove('show');
+  } else {
+    step1Pts = 0;
+    document.getElementById('decisionA').classList.add('selected-wrong');
+    document.getElementById('decisionB').classList.remove('selected-correct', 'selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'The save motion may actually signal distrust and alert Meridian to uncertainty they do not currently feel. AI flagged behaviour; it could not see the IT consolidation or the new CIO\'s orientation toward your platform.';
+    nudge.classList.add('show');
+  }
+
+  animateScore(getFinalScore());
+  showTracker();
+  markTrackerStep(1, step1Pts);
+
+  if (decision !== null && actionChoice !== null) {
+    resetStep2UI();
+    resetStep3UI();
+    actionChoice = null;
+    step2Marked = false;
+    step3Marked = false;
+  }
+
+  if (!document.getElementById('step2Section').classList.contains('show')) {
+    activateTrackerStep(2);
+    revealSection('step2Section');
+  }
+}
+
+function resetStep2UI() {
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+  var fb = document.getElementById('actionFeedback');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+}
+
+function resetStep3UI() {
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+  var fb = document.getElementById('confidenceFeedback');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+  confidence = null;
+  document.getElementById('step3Section').classList.remove('show');
+  document.getElementById('step3Section').style.opacity = '0';
+}
+
+// ── STEP 2: Action ──
+function chooseAction(key) {
+  score -= step2Pts;
+  score -= confidencePts;
+  confidencePts = 0;
+
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+
+  actionChoice = key;
+  var feedback = document.getElementById('actionFeedback');
+
+  if (key === 'B') {
+    step2Pts = 40;
+    score += 40;
+    document.getElementById('actionB').classList.add('selected-correct');
+    feedback.className = 'feedback-box correct show';
+    feedback.textContent = 'Best move. Sarah Chen is the new decision-maker and has no relationship with your team yet. An exec briefing built around her transformation agenda — not your contract — positions you as a strategic partner before the renewal clock becomes visible.';
+  } else if (key === 'A') {
+    step2Pts = 20;
+    score += 20;
+    document.getElementById('actionA').classList.add('selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'A reasonable instinct — but leading with renewal risk to an exec who does not currently feel at risk may create the problem you are trying to prevent. Better to lead with value.';
+  } else {
+    step2Pts = 0;
+    document.getElementById('actionC').classList.add('selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'Useful groundwork — but it is an internal action that delays relationship-building with a new CIO who is currently forming her vendor opinions. Speed to exec alignment matters more here.';
+  }
+
+  animateScore(getFinalScore());
+
+  if (!step2Marked) {
+    markTrackerStep(2, step2Pts);
+    step2Marked = true;
+  }
+
+  confidence = null;
+  resetStep3UI();
+
+  if (!document.getElementById('step3Section').classList.contains('show')) {
+    activateTrackerStep(3);
+    revealSection('step3Section');
+  }
+}
+
+// ── STEP 3: Confidence ──
+function chooseConfidence(choice) {
+  score -= confidencePts;
+
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+
+  confidence = choice;
+
+  var calibrated = (decision === 'B' && choice === 'high') || (decision === 'A' && choice === 'low');
+  if (calibrated) {
+    confidencePts = 20;
+  } else {
+    confidencePts = 15;
+  }
+  score += confidencePts;
+
+  var fb = document.getElementById('confidenceFeedback');
+  if (calibrated) {
+    if (choice === 'high') {
+      document.getElementById('confHigh').classList.add('selected-correct');
+    } else {
+      document.getElementById('confLow').classList.add('selected-correct');
+    }
+    fb.className = 'feedback-box correct show';
+    fb.textContent = 'Well calibrated. Your confidence matches the quality of your read.';
+  } else {
+    if (choice === 'high') {
+      document.getElementById('confHigh').classList.add('selected-wrong');
+    } else {
+      document.getElementById('confLow').classList.add('selected-correct');
+    }
+    fb.className = 'feedback-box wrong show';
+    fb.textContent = 'Slight mismatch between confidence and decision quality — worth noting for how you frame recommendations.';
+  }
+
+  animateScore(getFinalScore());
+  markTrackerStep(3, confidencePts);
+  step3Marked = true;
+
+  setTimeout(showScorecard, 700);
+}
+
+// ── CLUE UNLOCK ──
+function unlockClue(n) {
+  if (clueUnlocked[n] || clueUnlocking[n]) return;
+  clueUnlocking[n] = true;
+
+  var card = document.getElementById('clueCard' + n);
+  var btn = document.getElementById('clueBtn' + n);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⭮</span> Scanning…';
+
+  gsap.to(card, { y: -10, duration: 0.1, ease: 'power2.out', yoyo: true, repeat: 1, onComplete: function() {
+    setTimeout(function() {
+      gsap.to(btn, { x: -4, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' });
+    }, 500);
+    setTimeout(function() {
+      gsap.to(card, { borderColor: '#F59E0B', duration: 0.15, yoyo: true, repeat: 1, onComplete: function() {
+        gsap.to(card, { borderColor: '#0B6B61', duration: 0.3 });
+      }});
+      var locked = document.getElementById('clueLocked' + n);
+      var revealed = document.getElementById('clueRevealed' + n);
+      gsap.to(locked, { opacity: 0, y: -10, duration: 0.25, onComplete: function() {
+        locked.style.display = 'none';
+        revealed.classList.add('show');
+        gsap.fromTo(revealed, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+      }});
+      card.classList.add('unlocked');
+      clueUnlocked[n] = true;
+      clueUnlocking[n] = false;
+      cluesUsed++;
+      score -= 5;
+      if (score < 0) score = 0;
+      updateMaxDisplay();
+      animateScore(getFinalScore());
+      spawnParticles(btn);
+      spawnMinusBadge(btn, 5);
+    }, 1300);
+  }});
+}
+
+// ── HUMAN LENS ──
+function unlockHumanLensManual(btn) {
+  if (humanUnlocked || btn.disabled) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⭮</span> Revealing…';
+  setTimeout(function() {
+    spawnParticles(btn);
+    unlockHumanLens();
+  }, 1100);
+}
+
+function unlockHumanLens() {
+  humanUnlocked = true;
+  var overlay = document.getElementById('lockOverlay');
+  gsap.to(overlay, { opacity: 0, scale: 1.04, duration: 0.55, ease: 'power2.in', onComplete: function() {
+    overlay.style.display = 'none';
+  }});
+  var card = document.querySelector('.human-lens-wrap');
+  gsap.fromTo(card, { boxShadow: '0 0 0 0px rgba(11,107,97,0)' }, { boxShadow: '0 0 0 3px rgba(11,107,97,0.3)', duration: 0.4, ease: 'power2.out' });
+}
+
+// ── SCORECARD ──
+function showScorecard() {
+  var final = getFinalScore();
+  var max = getMaxScore();
+
+  var sc = document.getElementById('scorecard');
+  sc.classList.add('show');
+  gsap.fromTo(sc, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+
+  document.getElementById('scorecardDenom').textContent = '/ ' + max;
+
+  var countObj = { val: 0 };
+  gsap.to(countObj, { val: final, duration: 1.2, ease: 'power2.out', onUpdate: function() {
+    document.getElementById('scorecardNum').textContent = Math.round(countObj.val);
+  }});
+
+  setTimeout(function() {
+    var pct = max > 0 ? (final / max * 100) : 0;
+    document.getElementById('scorecardBarFill').style.width = pct + '%';
+  }, 300);
+
+  var tierLabel, tierDesc;
+  if (final >= 95) {
+    tierLabel = 'Deal qualified';
+    tierDesc = 'No signals needed. You read the context, saw past the data, and made the call a great CRO makes.';
+  } else if (final >= 80) {
+    tierLabel = 'Sharp instinct';
+    tierDesc = 'Right call, right action. You used context well and kept your score high.';
+  } else if (final >= 65) {
+    tierLabel = 'Strong read';
+    tierDesc = 'Right direction. A sharper first action would have maximised the outcome.';
+  } else {
+    tierLabel = 'Pipeline risk';
+    tierDesc = 'The AI flagged signals you followed without testing the context. That is exactly what this session is about.';
+  }
+  document.getElementById('scorecardTierLabel').textContent = tierLabel;
+  document.getElementById('scorecardTierDesc').textContent = tierDesc;
+
+  var step1Label = decision === 'B' ? 'Hold save motion — pursue expansion' : 'Triggered full save playbook';
+  var step2Label = actionChoice === 'B' ? 'CIO briefing (best)' : (actionChoice === 'A' ? 'CFO call' : 'Ticket review');
+  var step3Label = ((decision === 'B' && confidence === 'high') || (decision === 'A' && confidence === 'low')) ? 'Well-calibrated confidence' : 'Confidence — slight mismatch';
+
+  document.getElementById('bdLabel1').textContent = step1Label;
+  document.getElementById('bdVal1').textContent = '+' + step1Pts;
+  document.getElementById('bdLabel2').textContent = step2Label;
+  document.getElementById('bdVal2').textContent = '+' + step2Pts;
+  document.getElementById('bdLabel3').textContent = step3Label;
+  document.getElementById('bdVal3').textContent = '+' + confidencePts;
+
+  if (cluesUsed > 0) {
+    document.getElementById('bdRowClue').style.display = '';
+    document.getElementById('bdLabelClue').textContent = 'Clues used: ' + cluesUsed + ' × −5 pts';
+    document.getElementById('bdValClue').textContent = '−' + (cluesUsed * 5);
+  } else {
+    document.getElementById('bdRowClue').style.display = 'none';
+  }
+
+  document.getElementById('bdTotal').textContent = final;
+
+  var takeaway;
+  if (final >= 95 && cluesUsed === 0) {
+    takeaway = 'Perfect read, no scaffolding needed. You identified the context gap in the AI signal, acted on the human intelligence, and chose the most defensible path. That is the CRO instinct this session is designed to build.';
+  } else if (final >= 85) {
+    takeaway = 'Right call, right action. You correctly identified the false-positive and chose the strongest first move.';
+  } else if (final >= 65) {
+    takeaway = 'Right direction. The save motion suppression was correct — the CIO briefing over the CFO call was the sharper play.';
+  } else {
+    takeaway = 'The AI alert was designed to trigger action. The skill is knowing when the signal is real and when context inverts it.';
+  }
+  document.getElementById('scorecardTakeaway').textContent = takeaway;
+
+  showCostReveal(final);
+
+  setTimeout(function() {
+    sc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 300);
+}
+
+function showCostReveal(final) {
+  var humanMins = 15 + cluesUsed * 10;
+  document.getElementById('costHumanTime').textContent = humanMins + ' min';
+
+  var outcome = document.getElementById('costRevOutcome');
+  var note = document.getElementById('costRevNote');
+  var insight = document.getElementById('costInsight');
+
+  if (decision === 'B') {
+    outcome.textContent = '$1.8M secured + $600K expansion identified';
+    outcome.className = 'cost-col-value fraunces positive';
+    note.textContent = 'Renewal protected. Expansion conversation started.';
+    if (cluesUsed === 0) {
+      insight.textContent = 'Optimal. AI flagged the signal in seconds for under a cent. You supplied the context it could not see — no manual digging required.';
+    } else {
+      insight.textContent = 'Good balance. AI identified the risk signal. The ' + humanMins + ' min human check surfaced the context that protected a $1.8M relationship.';
+    }
+  } else {
+    outcome.textContent = '$270K at risk';
+    outcome.className = 'cost-col-value fraunces negative';
+    note.textContent = '15% discount offer on a customer not planning to leave.';
+    insight.textContent = 'Reframe the cost. The AI analysis cost $0.003. Acting on it without testing the context risked $270K in unnecessary discount and a relationship signal of distrust.';
+  }
+
+  var cr = document.getElementById('costReveal');
+  cr.classList.add('show');
+  gsap.fromTo(cr, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.3 });
+}
+
+// ── RESET ──
+function resetActivity() {
+  timerPause();
+  timerSeconds = 180;
+  updateTimerDisplay();
+
+  score = 0; cluesUsed = 0; step1Pts = 0; step2Pts = 0; confidencePts = 0;
+  decision = null; actionChoice = null; confidence = null; humanUnlocked = false;
+  step2Marked = false; step3Marked = false;
+  clueUnlocking = [false, false, false];
+  clueUnlocked = [false, false, false];
+  scoreAnimObj.val = 0;
+  displayedScore = 0;
+
+  document.getElementById('trackerScoreNum').textContent = '0';
+  document.getElementById('trackerDenom').textContent = '/ 100';
+
+  var tracker = document.getElementById('scoreTracker');
+  tracker.classList.remove('visible');
+
+  for (var s = 1; s <= 3; s++) {
+    var dot = document.getElementById('trackerDot' + s);
+    dot.classList.remove('active', 'done');
+    dot.textContent = s;
+    var pulse = document.getElementById('trackerPulse' + s);
+    if (pulse) { pulse.style.display = 'none'; }
+    var pts = document.getElementById('trackerPts' + s);
+    if (pts) pts.textContent = '';
+    var step = document.getElementById('trackerStep' + s);
+    step.classList.remove('done-step');
+    if (s < 3) {
+      var line = document.getElementById('trackerLine' + s);
+      if (line) line.classList.remove('done-line');
+    }
+  }
+
+  var step1 = document.getElementById('step1Section');
+  step1.classList.remove('show');
+  step1.style.opacity = '0';
+  step1.style.display = 'none';
+  document.getElementById('decisionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('decisionB').classList.remove('selected-correct','selected-wrong');
+  var df = document.getElementById('decisionFeedback');
+  df.className = 'feedback-box'; df.textContent = '';
+  document.getElementById('reconsiderNudge').classList.remove('show');
+
+  var step2 = document.getElementById('step2Section');
+  step2.classList.remove('show');
+  step2.style.opacity = '0';
+  step2.style.display = 'none';
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+  var af = document.getElementById('actionFeedback');
+  af.className = 'feedback-box'; af.textContent = '';
+
+  var step3 = document.getElementById('step3Section');
+  step3.classList.remove('show');
+  step3.style.opacity = '0';
+  step3.style.display = 'none';
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+  var cf = document.getElementById('confidenceFeedback');
+  cf.className = 'feedback-box'; cf.textContent = '';
+
+  var sc = document.getElementById('scorecard');
+  sc.classList.remove('show');
+  document.getElementById('scorecardNum').textContent = '0';
+  document.getElementById('scorecardBarFill').style.width = '0%';
+
+  var cr = document.getElementById('costReveal');
+  cr.classList.remove('show');
+
+  for (var i = 0; i < 3; i++) {
+    var locked = document.getElementById('clueLocked' + i);
+    var revealed = document.getElementById('clueRevealed' + i);
+    var card = document.getElementById('clueCard' + i);
+    var btn = document.getElementById('clueBtn' + i);
+    locked.style.display = '';
+    locked.style.opacity = '1';
+    revealed.classList.remove('show');
+    card.classList.remove('unlocked');
+    card.style.borderColor = '';
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Ask AI';
+  }
+
+  var overlay = document.getElementById('lockOverlay');
+  overlay.style.display = '';
+  overlay.style.opacity = '1';
+  overlay.style.transform = '';
+  var revealBtn = document.getElementById('btnRevealHuman');
+  revealBtn.disabled = false;
+  revealBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Reveal the finding';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  setTimeout(function() {
+    revealSection('step1Section');
+  }, 100);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', function() {
+  revealSection('step1Section');
+  activateTrackerStep(1);
+  showTracker();
+});
+</script>
+</body>
+</html>

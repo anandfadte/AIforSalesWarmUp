@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI for Sales &mdash; Warm-Up Activities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --surface-2: #F1F1ED;
+  --ink: #172A3A;
+  --muted: #5E6E7B;
+  --line: #E2E2DC;
+  --accent: #0B6B61;
+  --accent-soft: #E7F2F0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Public Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  min-height: 100vh;
+}
+.page-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 72px 32px 80px;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.page-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 6vw, 58px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+.page-subtitle {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 600px;
+  margin-bottom: 64px;
+  line-height: 1.65;
+}
+.activities {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.activity-card {
+  display: block;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 40px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.activity-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(11,107,97,0.10);
+}
+.card-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.card-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+  max-width: 560px;
+}
+.card-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.meta-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.activity-card:hover .meta-tag {
+  border-color: #A8D5CF;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.card-arrow {
+  margin-top: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+@media (max-width: 600px) {
+  .activity-card { padding: 24px 22px; }
+  .page-wrap { padding: 48px 20px 60px; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="eyebrow">CLAUDE FOR SALES &middot; WORKSHOP WARM-UPS</div>
+  <h1 class="page-title fraunces">Interactive<br>Warm-Up Activities</h1>
+  <p class="page-subtitle">Decision simulations for sales leadership and account teams. Each activity takes 3&ndash;5 minutes and is designed to surface the felt need for AI-assisted selling before the workshop begins.</p>
+
+  <div class="activities">
+
+    <a class="activity-card" href="aviva-cto-meeting.html">
+      <div class="card-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        5 MIN &middot; CLAUDE FOR SALES WORKSHOP OPENER
+      </div>
+      <div class="card-title fraunces">You have 10 minutes.<br>What do you actually know?</div>
+      <div class="card-desc">CTO meeting in 10 minutes. CRM says the account is healthy. But Aviva just announced a Palantir AI partnership, their new CTO has a track record of vendor consolidation, and Legal &amp; General launched a competing platform last week. What would you do?</div>
+      <div class="card-meta">
+        <span class="meta-tag">Account Head</span>
+        <span class="meta-tag">Aviva PLC</span>
+        <span class="meta-tag">CTO Meeting</span>
+        <span class="meta-tag">Account Research</span>
+        <span class="meta-tag">CXO Brief</span>
+      </div>
+      <div class="card-arrow">
+        Open activity
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </a>
+
+    <a class="activity-card" href="ai-scored-at-risk.html">
+      <div class="card-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        3 MIN &middot; AI FOR SALES LEADERSHIP
+      </div>
+      <div class="card-title fraunces">AI scored it at-risk.<br>What would you do?</div>
+      <div class="card-desc">A $1.8M renewal has just been flagged critical by your AI health scoring platform. The save playbook is one click away. But is the AI reading the account correctly? Make the call in 3 minutes.</div>
+      <div class="card-meta">
+        <span class="meta-tag">CRO</span>
+        <span class="meta-tag">Meridian Healthcare</span>
+        <span class="meta-tag">$1.8M ARR</span>
+        <span class="meta-tag">AI Health Score</span>
+        <span class="meta-tag">Renewal Decision</span>
+      </div>
+      <div class="card-arrow">
+        Open activity
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </a>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You have 10 minutes. What do you actually know?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --surface-2: #F1F1ED;
+  --ink: #172A3A;
+  --muted: #5E6E7B;
+  --line: #E2E2DC;
+  --accent: #0B6B61;
+  --accent-2: #0E8578;
+  --accent-soft: #E7F2F0;
+  --warn: #B45309;
+  --warn-bg: #FFFBEB;
+  --warn-border: #F59E0B;
+  --warn-dark: #78350F;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Public Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+}
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+@media (max-width: 700px) {
+  .page-wrap { padding: 32px 20px; }
+}
+
+/* ── Typography ── */
+.fraunces { font-family: 'Fraunces', serif; }
+.eyebrow {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.muted { color: var(--muted); }
+
+/* ── Page Header ── */
+.page-header { text-align: center; margin-bottom: 40px; }
+.page-header .eyebrow { margin-bottom: 16px; }
+.page-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.page-subtitle {
+  font-size: clamp(16px, 2.5vw, 21px);
+  color: var(--muted);
+  max-width: 640px;
+  margin: 0 auto;
+  font-weight: 400;
+}
+
+/* ── Context Bar ── */
+.context-bar {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* ── Timer Row ── */
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.timer-display {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 110px;
+  transition: color 0.4s;
+}
+.timer-display.urgent { color: #DC2626; }
+.timer-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-timer {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-timer:hover { background: var(--surface-2); border-color: var(--accent); }
+.btn-reset-activity {
+  margin-left: auto;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-reset-activity:hover { background: var(--surface-2); color: var(--ink); }
+
+/* ── Scenario Card ── */
+.scenario-card {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 32px;
+}
+.scenario-card .eyebrow { color: #7DD3C8; margin-bottom: 14px; }
+.scenario-card p { font-size: 16px; line-height: 1.75; opacity: 0.9; }
+.scenario-card strong { color: #fff; font-weight: 700; }
+.scenario-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  opacity: 0.4;
+  font-style: italic;
+}
+@media (max-width: 700px) {
+  .scenario-card { padding: 24px 22px; }
+}
+
+/* ── Split View ── */
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+@media (max-width: 700px) {
+  .split-view { grid-template-columns: 1fr; }
+}
+.lens-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.lens-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.lens-basis {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+}
+.lens-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 16px 22px 12px;
+}
+.lens-body { padding: 0 22px 22px; flex: 1; }
+
+/* AI Lens signals */
+.signal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.signal-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.signal-item.top {
+  background: var(--accent-soft);
+  border-color: #A8D5CF;
+}
+.signal-rank {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 2px 7px;
+  border-radius: 20px;
+  min-width: 28px;
+  text-align: center;
+}
+.signal-item.top .signal-rank { background: var(--accent); color: #fff; }
+.signal-score {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 36px;
+}
+.signal-item.top .signal-score { color: var(--accent); }
+.signal-info { flex: 1; }
+.signal-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.signal-sublabel { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.signal-item.top .signal-sublabel { color: var(--accent-2); font-weight: 600; }
+.lens-footer {
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  padding: 14px 22px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.lens-footer strong { color: var(--ink); }
+
+/* Human Lens content */
+.human-lens-content { display: flex; flex-direction: column; gap: 16px; }
+.human-quote {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--ink);
+  border-left: 4px solid var(--accent);
+  padding-left: 18px;
+  margin: 0;
+}
+.human-note {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.human-footer-text { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+/* Lock overlay */
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 42, 58, 0.78);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px;
+  text-align: center;
+  border-radius: 14px;
+  z-index: 10;
+}
+.lock-icon-circle {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lock-overlay-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+.lock-overlay-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  max-width: 220px;
+  line-height: 1.5;
+}
+.human-lens-wrap { position: relative; display: flex; flex-direction: column; flex: 1; }
+
+/* Mario-style gold button */
+.btn-mario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  background: #F59E0B;
+  color: #1C1200;
+  box-shadow: 0 4px 0 #92400E;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+  letter-spacing: 0.01em;
+}
+.btn-mario:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #92400E; }
+.btn-mario:active { transform: translateY(2px); box-shadow: 0 2px 0 #92400E; }
+
+/* ── Cost Hero Banner ── */
+.cost-hero {
+  background: var(--accent-soft);
+  border: 1px solid #A8D5CF;
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-top: 48px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cost-hero-left { flex: 1; min-width: 200px; }
+.cost-hero-left .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.cost-hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.cost-hero-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.cost-hero-pill {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  padding: 18px 24px;
+  text-align: center;
+  min-width: 140px;
+}
+.cost-hero-pill-label { font-size: 11px; font-weight: 700; opacity: 0.75; letter-spacing: 0.08em; text-transform: uppercase; }
+.cost-hero-pill-value {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.cost-hero-pill-note { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+/* ── Clue Grid ── */
+.clue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+@media (max-width: 700px) {
+  .clue-grid { grid-template-columns: 1fr; }
+}
+.clue-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.clue-card.unlocked { border-color: var(--accent); }
+.clue-locked { padding: 22px 20px; display: flex; flex-direction: column; gap: 12px; }
+.clue-revealed { padding: 22px 20px; display: none; flex-direction: column; gap: 12px; }
+.clue-revealed.show { display: flex; }
+.clue-category {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.clue-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clue-hint {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.clue-cost-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.clue-finding {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+.clue-unlocked-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: none;
+}
+.clue-unlocked-label.show { display: block; }
+
+/* ── Score Tracker ── */
+.score-tracker {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 24px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.score-tracker.visible { opacity: 1; pointer-events: auto; }
+.tracker-score-box {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.tracker-score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.tracker-score-denom {
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.tracker-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+}
+.tracker-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tracker-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all 0.3s;
+  position: relative;
+}
+.tracker-dot.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.tracker-dot.done {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.tracker-dot-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.tracker-line {
+  height: 2px;
+  width: 40px;
+  background: var(--line);
+  transition: background 0.5s;
+}
+.tracker-line.done-line { background: var(--accent); }
+.tracker-step-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.tracker-step.done-step .tracker-step-label { color: var(--accent); }
+.tracker-pts {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  display: none;
+}
+.tracker-step.done-step .tracker-pts { display: inline; }
+@media (max-width: 600px) {
+  .tracker-line { width: 20px; }
+  .tracker-step-label { display: none; }
+}
+
+/* ── Step Sections ── */
+.step-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 24px;
+  opacity: 0;
+  display: none;
+}
+.step-section.show { display: block; }
+@media (max-width: 700px) {
+  .step-section { padding: 24px 22px; }
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.step-badge {
+  width: 36px;
+  height: 36px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.step-header-text .eyebrow { margin-bottom: 2px; }
+.step-title {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.choice-grid { display: flex; flex-direction: column; gap: 12px; }
+.choice-btn {
+  width: 100%;
+  text-align: left;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  font-family: 'Public Sans', sans-serif;
+}
+.choice-btn:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-2px); }
+.choice-btn.selected-correct {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.choice-btn.selected-wrong {
+  border-color: var(--warn-border);
+  background: var(--warn-bg);
+}
+.choice-btn-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.choice-btn-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.choice-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.choice-btn.selected-correct .choice-key { background: var(--accent); color: #fff; }
+.choice-btn.selected-wrong .choice-key { background: var(--warn-border); color: #fff; }
+.feedback-box {
+  margin-top: 16px;
+  padding: 18px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+  display: none;
+  border-left: 4px solid;
+}
+.feedback-box.correct {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.feedback-box.wrong {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+  color: var(--warn-dark);
+}
+.feedback-box.show { display: block; }
+.reconsider-nudge {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  display: none;
+}
+.reconsider-nudge.show { display: block; }
+
+/* ── Scorecard ── */
+.scorecard {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 24px;
+  display: none;
+}
+.scorecard.show { display: block; }
+.scorecard-header { text-align: center; margin-bottom: 32px; }
+.scorecard-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7DD3C8;
+  margin-bottom: 12px;
+}
+.scorecard-num-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+.scorecard-num {
+  font-family: 'Fraunces', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.scorecard-denom {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+}
+.scorecard-bar-wrap {
+  height: 8px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 20px;
+  margin: 20px auto 16px;
+  max-width: 400px;
+  overflow: hidden;
+}
+.scorecard-bar-fill {
+  height: 100%;
+  background: var(--accent-2);
+  border-radius: 20px;
+  width: 0%;
+  transition: width 0.8s ease;
+}
+.scorecard-tier-label {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.scorecard-tier-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+.score-breakdown {
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+}
+.breakdown-row.total-row {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 10px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+}
+.breakdown-row .pts-val { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: #7DD3C8; }
+.breakdown-row.penalty-row .pts-val { color: #FCA5A5; }
+.breakdown-row.total-row .pts-val { color: #fff; }
+.scorecard-takeaway {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 18px 22px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+  line-height: 1.65;
+}
+@media (max-width: 700px) {
+  .scorecard { padding: 28px 22px; }
+}
+
+/* ── Cost Reveal Panel ── */
+.cost-reveal {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 48px;
+  display: none;
+}
+.cost-reveal.show { display: block; }
+.cost-reveal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.cost-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 700px) {
+  .cost-cols { grid-template-columns: 1fr; }
+  .cost-reveal { padding: 24px 22px; }
+}
+.cost-col {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 20px 20px;
+}
+.cost-col-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.cost-col-value {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.cost-col-value.positive { color: var(--accent); }
+.cost-col-value.negative { color: #DC2626; }
+.cost-col-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.cost-insight {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Workshop CTA strip */
+.workshop-strip {
+  background: var(--ink);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-top: 24px;
+  display: none;
+}
+.workshop-strip.show { display: block; }
+.workshop-strip-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7DD3C8;
+  margin-bottom: 10px;
+}
+.workshop-strip-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.workshop-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.skill-tag {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.03em;
+}
+.skill-tag.highlight {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+.spin {
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- SECTION 1: PAGE HEADER -->
+  <div class="page-header">
+    <div class="eyebrow">WARM-UP &middot; 5 MINUTES &middot; CLAUDE FOR SALES</div>
+    <h1 class="page-title fraunces">You have 10 minutes.<br>What do you actually know?</h1>
+    <p class="page-subtitle">The CTO of your biggest account just requested a meeting &mdash; today at 3pm. CRM says green. But the world moved on while you weren&rsquo;t looking.</p>
+  </div>
+
+  <!-- SECTION 2: CONTEXT BAR -->
+  <div class="context-bar">
+    You are the Account Head managing <strong>Aviva PLC</strong> at a leading global technology firm. Aviva is your largest UK account &mdash; <strong>&pound;4.2M annual contract</strong>, 3-year relationship. This morning, the CTO&rsquo;s PA sent a calendar invite: <em>&ldquo;Strategic alignment &mdash; 45 min.&rdquo;</em> No agenda. No context. The CTO has never called this meeting before &mdash; it has always been your initiative. The meeting starts in <strong>10 minutes</strong>. Your CRM is open. What do you know?
+  </div>
+
+  <!-- SECTION 3: TIMER ROW -->
+  <div class="timer-row">
+    <div class="timer-display fraunces" id="timerDisplay">5:00</div>
+    <div class="timer-btns">
+      <button class="btn-timer" id="btnTimerStart" onclick="timerStart()">Start</button>
+      <button class="btn-timer" id="btnTimerPause" onclick="timerPause()" style="display:none">Pause</button>
+      <button class="btn-timer" onclick="timerReset()">Reset</button>
+    </div>
+    <button class="btn-reset-activity" onclick="resetActivity()">&#8635; Reset Activity</button>
+  </div>
+
+  <!-- SECTION 4: SCENARIO CARD -->
+  <div class="scenario-card">
+    <div class="eyebrow">ACCOUNT SITUATION &middot; AVIVA PLC &middot; CTO MEETING &mdash; 10 MIN</div>
+    <p>Your CRM shows Aviva at <strong>72 / 100 &mdash; Healthy.</strong> Last logged meeting: 4 months ago. Two open opportunities at proposal stage. Contract renewal in 8 months. The system recommendation: <strong>standard QBR prep.</strong></p>
+    <p style="margin-top:16px;">What your CRM cannot see: Aviva&rsquo;s board announced a <strong>new AI-first strategy</strong> last month. Their CTO &mdash; who joined 8 months ago from McKinsey Digital &mdash; has a track record of <strong>vendor consolidation</strong>. And the CTO&rsquo;s LinkedIn activity from yesterday suggests they are actively evaluating the market.</p>
+    <p class="scenario-hint">Review what the CRM shows on the left. The full picture is locked &mdash; reveal it when you are ready.</p>
+  </div>
+
+  <!-- SECTION 5: SPLIT VIEW -->
+  <div class="split-view">
+
+    <!-- AI Lens: CRM -->
+    <div class="lens-card">
+      <div class="lens-header">
+        <div class="eyebrow">CRM LENS</div>
+        <div class="lens-basis">Basis: CRM &amp; logged activity</div>
+      </div>
+      <div class="lens-title fraunces">What your CRM shows</div>
+      <div class="lens-body">
+        <ul class="signal-list">
+          <li class="signal-item top">
+            <span class="signal-rank">#1</span>
+            <span class="signal-score">72</span>
+            <div class="signal-info">
+              <div class="signal-label">Relationship score</div>
+              <div class="signal-sublabel">CRM signal: Healthy &mdash; no action needed</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#2</span>
+            <span class="signal-score">4mo</span>
+            <div class="signal-info">
+              <div class="signal-label">Last interaction logged</div>
+              <div class="signal-sublabel">QBR call, senior stakeholder attended</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#3</span>
+            <span class="signal-score">2</span>
+            <div class="signal-info">
+              <div class="signal-label">Open opportunities</div>
+              <div class="signal-sublabel">At proposal stage, &pound;1.1M combined</div>
+            </div>
+          </li>
+          <li class="signal-item">
+            <span class="signal-rank">#4</span>
+            <span class="signal-score">8mo</span>
+            <div class="signal-info">
+              <div class="signal-label">Renewal timeline</div>
+              <div class="signal-sublabel">No churn flag. Standard renewal cycle.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="lens-footer">
+        <strong>CRM recommendation: Standard QBR prep.</strong><br>
+        No flags, no urgency signals. Account looks healthy.
+      </div>
+    </div>
+
+    <!-- Human Lens: What Claude would surface -->
+    <div class="lens-card">
+      <div class="human-lens-wrap">
+        <div class="lens-header">
+          <div class="eyebrow">MARKET LENS</div>
+          <div class="lens-basis">Basis: Account research + CXO brief</div>
+        </div>
+        <div class="lens-title fraunces">What Claude would have found</div>
+        <div class="lens-body">
+          <div class="human-lens-content">
+            <blockquote class="human-quote">
+              &ldquo;Aviva&rsquo;s CTO came from McKinsey Digital. At her last two firms, she consolidated vendors by 40%. She announced a Palantir AI partnership 3 weeks ago. She is meeting 3 other vendors this week &mdash; and Legal &amp; General just launched a competing platform.&rdquo;
+            </blockquote>
+            <div class="human-note">
+              The CRM tracked meetings and pipeline. It could not see the new AI strategy, the CTO&rsquo;s consolidation pattern, the competitive move from L&amp;G, or what this meeting is really about.
+            </div>
+          </div>
+        </div>
+        <div class="lens-footer">
+          <span class="human-footer-text">The score was 72. The situation was not.</span>
+        </div>
+
+        <!-- Lock overlay -->
+        <div class="lock-overlay" id="lockOverlay">
+          <div class="lock-icon-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="lock-overlay-title fraunces">Market intelligence</div>
+          <div class="lock-overlay-desc">See what a 3-minute Claude brief would have surfaced before this meeting.</div>
+          <button class="btn-mario" id="btnRevealHuman" onclick="unlockHumanLensManual(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Run the brief
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end split-view -->
+
+  <!-- SECTION 6: AI COST HERO BANNER -->
+  <div class="cost-hero">
+    <div class="cost-hero-left">
+      <div class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+        AI-POWERED &middot; REAL COST
+      </div>
+      <div class="cost-hero-title fraunces">Want Claude to surface more account context?</div>
+      <div class="cost-hero-desc">Each intelligence card below is answered by Claude &mdash; the model runs, tokens are consumed. The cost is tiny but real. Total shown at the end.</div>
+    </div>
+    <div class="cost-hero-pill">
+      <div class="cost-hero-pill-label">Per query</div>
+      <div class="cost-hero-pill-value fraunces">~$0.001</div>
+      <div class="cost-hero-pill-note">&minus;5 pts each</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: CLUE GRID -->
+  <div class="clue-grid">
+
+    <!-- Clue 1: Account Intelligence -->
+    <div class="clue-card" id="clueCard0">
+      <div class="clue-locked" id="clueLocked0">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          Account Intelligence
+        </div>
+        <div class="clue-hint">What has Aviva announced in the last 60 days?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn0" onclick="unlockClue(0)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask Claude
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed0">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          Account Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Aviva announced a &pound;50M AI partnership with Palantir 3 weeks ago. The CEO publicly committed to being &ldquo;AI-first across claims and underwriting by 2026.&rdquo; Board has set a new KPI: 30% of revenue from digital-first products by end of next year. The CTO owns the technology execution roadmap.</div>
+      </div>
+    </div>
+
+    <!-- Clue 2: CTO Intelligence -->
+    <div class="clue-card" id="clueCard1">
+      <div class="clue-locked" id="clueLocked1">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          CTO Intelligence
+        </div>
+        <div class="clue-hint">What is the CTO&rsquo;s background and stated priorities?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn1" onclick="unlockClue(1)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask Claude
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed1">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          CTO Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Joined Aviva 8 months ago from McKinsey Digital. Led 3 prior AI transformations at FTSE 100 firms. At both previous roles, consolidated technology vendors by 35&ndash;40% within 18 months. Quoted in Insurance Post last week: &ldquo;We need fewer, deeper partnerships &mdash; not a portfolio of 60 point solutions.&rdquo; Has never initiated a vendor meeting before.</div>
+      </div>
+    </div>
+
+    <!-- Clue 3: Competitive Intelligence -->
+    <div class="clue-card" id="clueCard2">
+      <div class="clue-locked" id="clueLocked2">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          Competitive Intelligence
+        </div>
+        <div class="clue-hint">What is the competitive landscape right now?</div>
+        <div><span class="clue-cost-badge">&#9888; &minus;5 pts</span></div>
+        <button class="btn-mario" id="clueBtn2" onclick="unlockClue(2)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Ask Claude
+        </button>
+      </div>
+      <div class="clue-revealed" id="clueRevealed2">
+        <div class="clue-category">
+          <div class="clue-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          Competitive Intelligence
+        </div>
+        <div class="clue-unlocked-label show">CLUE UNLOCKED &mdash; &minus;5 PTS</div>
+        <div class="clue-finding">Legal &amp; General launched their AI-powered claims platform last week &mdash; 40% faster processing, publicly benchmarked against Aviva. The Aviva CTO reposted the L&amp;G announcement with the comment: &ldquo;We will raise this.&rdquo; Three other vendors have been confirmed as meeting with Aviva&rsquo;s CTO this week. This is a strategic evaluation, not a check-in.</div>
+      </div>
+    </div>
+
+  </div><!-- end clue-grid -->
+
+  <!-- SCORE TRACKER -->
+  <div class="score-tracker" id="scoreTracker">
+    <div class="tracker-score-box">
+      <span class="tracker-score-num" id="trackerScoreNum">0</span>
+      <span class="tracker-score-denom" id="trackerDenom">/ 100</span>
+    </div>
+    <div class="tracker-steps">
+      <div class="tracker-step" id="trackerStep1">
+        <div class="tracker-dot" id="trackerDot1">
+          1
+          <span class="tracker-dot-pulse" id="trackerPulse1" style="display:none"></span>
+        </div>
+        <span class="tracker-step-label">Step 1</span>
+        <span class="tracker-pts" id="trackerPts1"></span>
+      </div>
+      <div class="tracker-line" id="trackerLine1"></div>
+      <div class="tracker-step" id="trackerStep2">
+        <div class="tracker-dot" id="trackerDot2">2<span class="tracker-dot-pulse" id="trackerPulse2" style="display:none"></span></div>
+        <span class="tracker-step-label">Step 2</span>
+        <span class="tracker-pts" id="trackerPts2"></span>
+      </div>
+      <div class="tracker-line" id="trackerLine2"></div>
+      <div class="tracker-step" id="trackerStep3">
+        <div class="tracker-dot" id="trackerDot3">3<span class="tracker-dot-pulse" id="trackerPulse3" style="display:none"></span></div>
+        <span class="tracker-step-label">Step 3</span>
+        <span class="tracker-pts" id="trackerPts3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: STEP 1 -->
+  <div class="step-section" id="step1Section">
+    <div class="step-header">
+      <div class="step-badge">1</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Your Opening</div>
+        <div class="step-title fraunces">How do you open the meeting?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="decisionA" onclick="chooseDecision('A')">
+        <div class="choice-btn-label"><span class="choice-key">A</span> Walk the CTO through your product roadmap and new capabilities</div>
+        <div class="choice-btn-desc">You have updates to share. Lead with what you bring to the table &mdash; new features, integrations, the roadmap for 2026. Show momentum.</div>
+      </button>
+      <button class="choice-btn" id="decisionB" onclick="chooseDecision('B')">
+        <div class="choice-btn-label"><span class="choice-key">B</span> Open with Aviva&rsquo;s transformation agenda &mdash; not yours</div>
+        <div class="choice-btn-desc">Start with what you know about their AI-first strategy, their board KPIs, and the CTO&rsquo;s priorities. Position as a partner in their outcome, not a vendor with a deck.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="decisionFeedback"></div>
+    <div class="reconsider-nudge" id="reconsiderNudge">Consider reconsidering &mdash; think about why the CTO called this meeting.</div>
+  </div>
+
+  <!-- SECTION 9: STEP 2 -->
+  <div class="step-section" id="step2Section">
+    <div class="step-header">
+      <div class="step-badge">2</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Your First Question</div>
+        <div class="step-title fraunces">What is your opening question to the CTO?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="actionA" onclick="chooseAction('A')">
+        <div class="choice-btn-label"><span class="choice-key">A</span> &ldquo;How is the digital transformation progressing?&rdquo;</div>
+        <div class="choice-btn-desc">Open, non-threatening. Shows interest in their journey. Standard relationship-building entry point.</div>
+      </button>
+      <button class="choice-btn" id="actionB" onclick="chooseAction('B')">
+        <div class="choice-btn-label"><span class="choice-key">B</span> &ldquo;Your Palantir announcement caught our attention. How does that reshape your thinking on your technology stack?&rdquo;</div>
+        <div class="choice-btn-desc">Shows you did your homework. Signals strategic awareness. Puts the conversation immediately at board-agenda level, not product demo level.</div>
+      </button>
+      <button class="choice-btn" id="actionC" onclick="chooseAction('C')">
+        <div class="choice-btn-label"><span class="choice-key">C</span> &ldquo;What is keeping you up at night heading into 2026?&rdquo;</div>
+        <div class="choice-btn-desc">Strategic open question. Good instinct. But generic &mdash; it doesn&rsquo;t show you have done any preparation on their specific situation.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="actionFeedback"></div>
+  </div>
+
+  <!-- SECTION 10: STEP 3 -->
+  <div class="step-section" id="step3Section">
+    <div class="step-header">
+      <div class="step-badge">3</div>
+      <div class="step-header-text">
+        <div class="eyebrow">Honest Check</div>
+        <div class="step-title fraunces">Going into that meeting &mdash; how prepared are you?</div>
+      </div>
+    </div>
+    <div class="choice-grid">
+      <button class="choice-btn" id="confHigh" onclick="chooseConfidence('high')">
+        <div class="choice-btn-label"><span class="choice-key">&#10003;</span> Fully prepared &mdash; I would go in confident</div>
+        <div class="choice-btn-desc">I know enough about Aviva&rsquo;s strategy, the CTO&rsquo;s agenda and the competitive context to lead a strategic conversation.</div>
+      </button>
+      <button class="choice-btn" id="confLow" onclick="chooseConfidence('low')">
+        <div class="choice-btn-label"><span class="choice-key">?</span> I would want more context before walking in</div>
+        <div class="choice-btn-desc">Something feels underprepared. I would want to know more before making decisions in the room.</div>
+      </button>
+    </div>
+    <div class="feedback-box" id="confidenceFeedback"></div>
+  </div>
+
+  <!-- SECTION 11: SCORECARD -->
+  <div class="scorecard" id="scorecard">
+    <div class="scorecard-header">
+      <div class="scorecard-eyebrow">YOUR FINAL SCORE</div>
+      <div class="scorecard-num-row">
+        <span class="scorecard-num fraunces" id="scorecardNum">0</span>
+        <span class="scorecard-denom fraunces" id="scorecardDenom">/ 100</span>
+      </div>
+      <div class="scorecard-bar-wrap">
+        <div class="scorecard-bar-fill" id="scorecardBarFill"></div>
+      </div>
+      <div class="scorecard-tier-label fraunces" id="scorecardTierLabel"></div>
+      <div class="scorecard-tier-desc" id="scorecardTierDesc"></div>
+    </div>
+    <div class="score-breakdown">
+      <div class="breakdown-row" id="bdRow1">
+        <span id="bdLabel1">Step 1</span>
+        <span class="pts-val" id="bdVal1">+0</span>
+      </div>
+      <div class="breakdown-row" id="bdRow2">
+        <span id="bdLabel2">Step 2</span>
+        <span class="pts-val" id="bdVal2">+0</span>
+      </div>
+      <div class="breakdown-row" id="bdRow3">
+        <span id="bdLabel3">Step 3</span>
+        <span class="pts-val" id="bdVal3">+0</span>
+      </div>
+      <div class="breakdown-row penalty-row" id="bdRowClue" style="display:none">
+        <span id="bdLabelClue">Clues used</span>
+        <span class="pts-val" id="bdValClue"></span>
+      </div>
+      <div class="breakdown-row total-row">
+        <span>Total</span>
+        <span class="pts-val" id="bdTotal">0</span>
+      </div>
+    </div>
+    <div class="scorecard-takeaway" id="scorecardTakeaway"></div>
+  </div>
+
+  <!-- SECTION 12: COST REVEAL PANEL -->
+  <div class="cost-reveal" id="costReveal">
+    <div class="cost-reveal-title fraunces">The real cost breakdown</div>
+    <div class="cost-cols">
+      <div class="cost-col">
+        <div class="cost-col-label">Prep time invested</div>
+        <div class="cost-col-value fraunces" id="costHumanTime">20 min</div>
+        <div class="cost-col-note">Manual research, LinkedIn, news scan</div>
+      </div>
+      <div class="cost-col">
+        <div class="cost-col-label">Claude brief cost</div>
+        <div class="cost-col-value fraunces">$0.003</div>
+        <div class="cost-col-note">Account research + CXO strategic brief</div>
+      </div>
+      <div class="cost-col">
+        <div class="cost-col-label">Revenue at stake</div>
+        <div class="cost-col-value fraunces" id="costRevOutcome"></div>
+        <div class="cost-col-note" id="costRevNote"></div>
+      </div>
+    </div>
+    <div class="cost-insight" id="costInsight"></div>
+  </div>
+
+  <!-- SECTION 13: WORKSHOP CONNECTION STRIP -->
+  <div class="workshop-strip" id="workshopStrip">
+    <div class="workshop-strip-eyebrow">THIS IS WHAT TODAY IS ABOUT</div>
+    <div class="workshop-strip-title fraunces">3 minutes with Claude would have changed everything in that room.</div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.65; margin-top:8px;">The CRM saw a 72. The world had moved on. Today you will learn how Account Heads use Claude skills and connectors to walk into every room with the intelligence that was locked in the market lens.</div>
+    <div class="workshop-skills">
+      <span class="skill-tag highlight">/account-research</span>
+      <span class="skill-tag highlight">/cxo-strategic-brief</span>
+      <span class="skill-tag">/earnings-agent</span>
+      <span class="skill-tag">/connections-mapping</span>
+      <span class="skill-tag">Web Search plugin</span>
+      <span class="skill-tag">GKnowledge connector</span>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// ── State ──
+var score = 0, cluesUsed = 0, step1Pts = 0, step2Pts = 0, confidencePts = 0;
+var decision = null, actionChoice = null, confidence = null, humanUnlocked = false;
+var step2Marked = false, step3Marked = false;
+var timerSeconds = 300, timerRunning = false, timerInterval = null;
+var clueUnlocking = [false, false, false];
+var clueUnlocked = [false, false, false];
+var scoreAnimObj = { val: 0 };
+
+function getFinalScore() {
+  return Math.max(0, score);
+}
+
+function getMaxScore() {
+  return 100 - cluesUsed * 5;
+}
+
+// ── Timer ──
+function timerStart() {
+  if (timerRunning) return;
+  timerRunning = true;
+  document.getElementById('btnTimerStart').style.display = 'none';
+  document.getElementById('btnTimerPause').style.display = '';
+  timerInterval = setInterval(function() {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      timerSeconds = 0;
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btnTimerPause').style.display = 'none';
+      document.getElementById('btnTimerStart').style.display = '';
+    }
+  }, 1000);
+}
+
+function timerPause() {
+  if (!timerRunning) return;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  document.getElementById('btnTimerPause').style.display = 'none';
+  document.getElementById('btnTimerStart').style.display = '';
+}
+
+function timerReset() {
+  timerPause();
+  timerSeconds = 300;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  var m = Math.floor(timerSeconds / 60);
+  var s = timerSeconds % 60;
+  var str = m + ':' + (s < 10 ? '0' : '') + s;
+  var el = document.getElementById('timerDisplay');
+  el.textContent = str;
+  if (timerSeconds < 60) {
+    el.classList.add('urgent');
+  } else {
+    el.classList.remove('urgent');
+  }
+}
+
+// ── Particles ──
+function spawnParticles(fromEl) {
+  var rect = fromEl.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+  var chars = ['★','★','✦','◆','●','✦','★','◆'];
+  var colors = ['#F59E0B','#0B6B61','#B45309','#84CC16','#FBBF24','#0E8578','#F59E0B','#0B6B61'];
+  for (var i = 0; i < 14; i++) {
+    var p = document.createElement('span');
+    p.textContent = chars[i % chars.length];
+    p.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;font-size:14px;color:' + colors[i % colors.length] + ';pointer-events:none;z-index:9999;user-select:none;';
+    document.body.appendChild(p);
+    var angle = (i / 14) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+    var dist = 60 + Math.random() * 60;
+    var tx = Math.cos(angle) * dist;
+    var ty = Math.sin(angle) * dist - 20;
+    var dur = 0.65 + Math.random() * 0.45;
+    gsap.to(p, { x: tx, y: ty, rotation: (Math.random() - 0.5) * 360, opacity: 0, duration: dur, ease: 'power2.out', onComplete: function(el) { el.remove(); }, onCompleteParams: [p] });
+  }
+}
+
+function spawnMinusBadge(fromEl) {
+  var rect = fromEl.getBoundingClientRect();
+  var badge = document.createElement('div');
+  badge.textContent = '-5 pts';
+  badge.style.cssText = 'position:fixed;left:' + (rect.left + rect.width / 2 - 25) + 'px;top:' + (rect.top) + 'px;background:#DC2626;color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(badge);
+  gsap.fromTo(badge, { opacity: 1, y: 0 }, { y: 30, opacity: 0, duration: 0.9, ease: 'power2.in', onComplete: function() { badge.remove(); } });
+}
+
+// ── Score animation ──
+function animateScore(newVal) {
+  var el = document.getElementById('trackerScoreNum');
+  gsap.to(scoreAnimObj, { val: newVal, duration: 0.5, ease: 'power2.out', onUpdate: function() {
+    el.textContent = Math.round(scoreAnimObj.val);
+  }});
+}
+
+function updateMaxDisplay() {
+  document.getElementById('trackerDenom').textContent = '/ ' + getMaxScore();
+}
+
+// ── Tracker ──
+function showTracker() {
+  var el = document.getElementById('scoreTracker');
+  el.classList.add('visible');
+}
+
+function markTrackerStep(step, pts) {
+  var dot = document.getElementById('trackerDot' + step);
+  var ptsEl = document.getElementById('trackerPts' + step);
+  var stepEl = document.getElementById('trackerStep' + step);
+  var pulseEl = document.getElementById('trackerPulse' + step);
+  dot.classList.remove('active');
+  dot.classList.add('done');
+  dot.textContent = '✓';
+  if (pulseEl) pulseEl.style.display = 'none';
+  if (pts !== undefined && pts !== null) {
+    ptsEl.textContent = '+' + pts;
+  }
+  stepEl.classList.add('done-step');
+  if (step < 3) {
+    var line = document.getElementById('trackerLine' + step);
+    if (line) line.classList.add('done-line');
+    var nextDot = document.getElementById('trackerDot' + (step + 1));
+    var nextPulse = document.getElementById('trackerPulse' + (step + 1));
+    if (nextDot) {
+      nextDot.classList.add('active');
+      if (nextPulse) nextPulse.style.display = '';
+    }
+  }
+}
+
+function activateTrackerStep(step) {
+  var dot = document.getElementById('trackerDot' + step);
+  var pulseEl = document.getElementById('trackerPulse' + step);
+  dot.classList.add('active');
+  if (pulseEl) pulseEl.style.display = '';
+}
+
+// ── Reveal section ──
+function revealSection(id) {
+  var el = document.getElementById(id);
+  el.classList.add('show');
+  gsap.fromTo(el, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+  var btns = el.querySelectorAll('.choice-btn');
+  if (btns.length) {
+    gsap.fromTo(btns, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.5)', stagger: 0.1 });
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── STEP 1: Decision ──
+function chooseDecision(choice) {
+  if (choice === decision) return;
+
+  score -= step1Pts;
+  score -= step2Pts;
+  score -= confidencePts;
+  step2Pts = 0;
+  confidencePts = 0;
+
+  if (decision !== null) {
+    document.getElementById('decisionA').classList.remove('selected-correct', 'selected-wrong');
+    document.getElementById('decisionB').classList.remove('selected-correct', 'selected-wrong');
+  }
+
+  decision = choice;
+  var feedback = document.getElementById('decisionFeedback');
+  var nudge = document.getElementById('reconsiderNudge');
+
+  if (choice === 'B') {
+    step1Pts = 40;
+    score += 40;
+    document.getElementById('decisionB').classList.add('selected-correct');
+    document.getElementById('decisionA').classList.remove('selected-correct', 'selected-wrong');
+    feedback.className = 'feedback-box correct show';
+    feedback.textContent = 'Right instinct. The CTO called this meeting because she has an agenda of her own. Coming in with your roadmap signals you have not done the homework. Coming in with her agenda signals you are the kind of partner who might survive vendor consolidation.';
+    nudge.classList.remove('show');
+  } else {
+    step1Pts = 0;
+    document.getElementById('decisionA').classList.add('selected-wrong');
+    document.getElementById('decisionB').classList.remove('selected-correct', 'selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'The CTO who consolidates vendors by 40% is not in the room to hear about your roadmap. She called this meeting for a reason. Opening with your deck is the fastest way to confirm you are a point solution, not a strategic partner.';
+    nudge.classList.add('show');
+  }
+
+  animateScore(getFinalScore());
+  showTracker();
+  markTrackerStep(1, step1Pts);
+
+  if (decision !== null && actionChoice !== null) {
+    resetStep2UI();
+    resetStep3UI();
+    actionChoice = null;
+    step2Marked = false;
+    step3Marked = false;
+  }
+
+  if (!document.getElementById('step2Section').classList.contains('show')) {
+    activateTrackerStep(2);
+    revealSection('step2Section');
+  }
+}
+
+function resetStep2UI() {
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+  var fb = document.getElementById('actionFeedback');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+}
+
+function resetStep3UI() {
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+  var fb = document.getElementById('confidenceFeedback');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+  confidence = null;
+  document.getElementById('step3Section').classList.remove('show');
+  document.getElementById('step3Section').style.opacity = '0';
+}
+
+// ── STEP 2: First question ──
+function chooseAction(key) {
+  score -= step2Pts;
+  score -= confidencePts;
+  confidencePts = 0;
+
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+
+  actionChoice = key;
+  var feedback = document.getElementById('actionFeedback');
+
+  if (key === 'B') {
+    step2Pts = 40;
+    score += 40;
+    document.getElementById('actionB').classList.add('selected-correct');
+    feedback.className = 'feedback-box correct show';
+    feedback.textContent = 'Best opening. It immediately signals you have done the work, that you understand her board agenda, and that you are not here to sell a product. You are here to be part of a strategy. That is the difference between a vendor and a strategic partner in the first 30 seconds.';
+  } else if (key === 'A') {
+    step2Pts = 0;
+    score += 0;
+    document.getElementById('actionA').classList.add('selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'Too generic. The CTO has heard this question from every vendor she has met this week. It signals you have no specific knowledge of Aviva\'s situation. You have used your best opening move to ask for information you should already have.';
+  } else {
+    step2Pts = 20;
+    score += 20;
+    document.getElementById('actionC').classList.add('selected-wrong');
+    feedback.className = 'feedback-box wrong show';
+    feedback.textContent = 'Better instinct than a product pitch. But it is still a generic question. It does not show you know about the Palantir announcement, the board KPI, or the consolidation programme. A prepared account head would lead with a specific insight, not an open question.';
+  }
+
+  animateScore(getFinalScore());
+
+  if (!step2Marked) {
+    markTrackerStep(2, step2Pts);
+    step2Marked = true;
+  }
+
+  confidence = null;
+  resetStep3UI();
+
+  if (!document.getElementById('step3Section').classList.contains('show')) {
+    activateTrackerStep(3);
+    revealSection('step3Section');
+  }
+}
+
+// ── STEP 3: Confidence ──
+function chooseConfidence(choice) {
+  score -= confidencePts;
+
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+
+  confidence = choice;
+
+  var calibrated = (decision === 'B' && actionChoice === 'B' && choice === 'high') || (decision !== 'B' && choice === 'low');
+  if (calibrated) {
+    confidencePts = 20;
+  } else {
+    confidencePts = 15;
+  }
+  score += confidencePts;
+
+  var fb = document.getElementById('confidenceFeedback');
+  if (calibrated) {
+    if (choice === 'high') {
+      document.getElementById('confHigh').classList.add('selected-correct');
+    } else {
+      document.getElementById('confLow').classList.add('selected-correct');
+    }
+    fb.className = 'feedback-box correct show';
+    fb.textContent = 'Well calibrated. Your confidence matches the quality of your read.';
+  } else {
+    if (choice === 'high') {
+      document.getElementById('confHigh').classList.add('selected-wrong');
+    } else {
+      document.getElementById('confLow').classList.add('selected-correct');
+    }
+    fb.className = 'feedback-box wrong show';
+    fb.textContent = 'Your choices were strong but confidence and decision quality are slightly misaligned. The best prep removes the uncertainty before the room, not inside it.';
+  }
+
+  animateScore(getFinalScore());
+  markTrackerStep(3, confidencePts);
+  step3Marked = true;
+
+  setTimeout(showScorecard, 700);
+}
+
+// ── CLUE UNLOCK ──
+function unlockClue(n) {
+  if (clueUnlocked[n] || clueUnlocking[n]) return;
+  clueUnlocking[n] = true;
+
+  var card = document.getElementById('clueCard' + n);
+  var btn = document.getElementById('clueBtn' + n);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⦲</span> Scanning...';
+
+  gsap.to(card, { y: -10, duration: 0.1, ease: 'power2.out', yoyo: true, repeat: 1, onComplete: function() {
+    setTimeout(function() {
+      gsap.to(btn, { x: -4, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' });
+    }, 500);
+    setTimeout(function() {
+      gsap.to(card, { borderColor: '#F59E0B', duration: 0.15, yoyo: true, repeat: 1, onComplete: function() {
+        gsap.to(card, { borderColor: '#0B6B61', duration: 0.3 });
+      }});
+      var locked = document.getElementById('clueLocked' + n);
+      var revealed = document.getElementById('clueRevealed' + n);
+      gsap.to(locked, { opacity: 0, y: -10, duration: 0.25, onComplete: function() {
+        locked.style.display = 'none';
+        revealed.classList.add('show');
+        gsap.fromTo(revealed, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+      }});
+      card.classList.add('unlocked');
+      clueUnlocked[n] = true;
+      clueUnlocking[n] = false;
+      cluesUsed++;
+      score -= 5;
+      if (score < 0) score = 0;
+      updateMaxDisplay();
+      animateScore(getFinalScore());
+      spawnParticles(btn);
+      spawnMinusBadge(btn);
+    }, 1300);
+  }});
+}
+
+// ── HUMAN LENS ──
+function unlockHumanLensManual(btn) {
+  if (humanUnlocked || btn.disabled) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⦲</span> Running brief...';
+  setTimeout(function() {
+    spawnParticles(btn);
+    unlockHumanLens();
+  }, 1100);
+}
+
+function unlockHumanLens() {
+  humanUnlocked = true;
+  var overlay = document.getElementById('lockOverlay');
+  gsap.to(overlay, { opacity: 0, scale: 1.04, duration: 0.55, ease: 'power2.in', onComplete: function() {
+    overlay.style.display = 'none';
+  }});
+  var card = document.querySelector('.human-lens-wrap');
+  gsap.fromTo(card, { boxShadow: '0 0 0 0px rgba(11,107,97,0)' }, { boxShadow: '0 0 0 3px rgba(11,107,97,0.3)', duration: 0.4, ease: 'power2.out' });
+}
+
+// ── SCORECARD ──
+function showScorecard() {
+  var final = getFinalScore();
+  var max = getMaxScore();
+
+  var sc = document.getElementById('scorecard');
+  sc.classList.add('show');
+  gsap.fromTo(sc, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+
+  document.getElementById('scorecardDenom').textContent = '/ ' + max;
+
+  var countObj = { val: 0 };
+  gsap.to(countObj, { val: final, duration: 1.2, ease: 'power2.out', onUpdate: function() {
+    document.getElementById('scorecardNum').textContent = Math.round(countObj.val);
+  }});
+
+  setTimeout(function() {
+    var pct = max > 0 ? (final / max * 100) : 0;
+    document.getElementById('scorecardBarFill').style.width = pct + '%';
+  }, 300);
+
+  var tierLabel, tierDesc;
+  if (final >= 95) {
+    tierLabel = 'Strategic Advisor';
+    tierDesc = 'You walked in with the CTO\'s agenda, not yours. You led with the Palantir announcement. You knew what this meeting was actually about. That\'s the account head who survives consolidation.';
+  } else if (final >= 80) {
+    tierLabel = 'Account Manager';
+    tierDesc = 'Right direction, strong instincts. A sharper opening question would have signalled the level of prep that sets you apart from the other three vendors she is meeting this week.';
+  } else if (final >= 60) {
+    tierLabel = 'Relationship Manager';
+    tierDesc = 'You have the relationship. But the CTO is evaluating whether you understand her strategy, not just your history. The gap is intel, not intent.';
+  } else {
+    tierLabel = 'Vendor';
+    tierDesc = 'The CRM said green. You went in without the context that changes everything. This is exactly the gap today is designed to close.';
+  }
+  document.getElementById('scorecardTierLabel').textContent = tierLabel;
+  document.getElementById('scorecardTierDesc').textContent = tierDesc;
+
+  var step1Label = decision === 'B' ? 'Led with Aviva\'s transformation agenda' : 'Led with product roadmap';
+  var step2Label;
+  if (actionChoice === 'B') { step2Label = 'Palantir opener (best)'; }
+  else if (actionChoice === 'C') { step2Label = 'Open strategic question'; }
+  else { step2Label = 'Generic transformation question'; }
+  var step3Label;
+  if ((decision === 'B' && actionChoice === 'B' && confidence === 'high') || (decision !== 'B' && confidence === 'low')) {
+    step3Label = 'Well-calibrated confidence';
+  } else {
+    step3Label = 'Confidence slightly off';
+  }
+
+  document.getElementById('bdLabel1').textContent = step1Label;
+  document.getElementById('bdVal1').textContent = '+' + step1Pts;
+  document.getElementById('bdLabel2').textContent = step2Label;
+  document.getElementById('bdVal2').textContent = '+' + step2Pts;
+  document.getElementById('bdLabel3').textContent = step3Label;
+  document.getElementById('bdVal3').textContent = '+' + confidencePts;
+
+  if (cluesUsed > 0) {
+    document.getElementById('bdRowClue').style.display = '';
+    document.getElementById('bdLabelClue').textContent = 'Clues used: ' + cluesUsed + ' x -5 pts';
+    document.getElementById('bdValClue').textContent = '-' + (cluesUsed * 5);
+  } else {
+    document.getElementById('bdRowClue').style.display = 'none';
+  }
+
+  document.getElementById('bdTotal').textContent = final;
+
+  var takeaway;
+  if (final >= 95 && cluesUsed === 0) {
+    takeaway = 'No scaffold needed. You identified the real meeting agenda before walking in, opened at board-agenda level, and would have made the other three vendors this week look like they had not done their homework. That is what Claude for Sales is built to give every Account Head, every time.';
+  } else if (final >= 80) {
+    takeaway = 'Strong read. The opening was right. The question was close but not specific enough to show you had done the deep work on her announcement and her consolidation pattern. 3 minutes with /account-research would have closed that gap.';
+  } else if (final >= 60) {
+    takeaway = 'Good instincts, insufficient intel. The CRM said green because it only knows what you log. The world moves faster than account notes. /account-research and /cxo-strategic-brief run in minutes, not hours.';
+  } else {
+    takeaway = 'The CRM gave you a 72. It was not lying - it was looking at the wrong signals. The brief that takes 3 minutes would have shown you the board mandate, the consolidation pattern, and the competitive pressure from L&G. That is the gap today closes.';
+  }
+  document.getElementById('scorecardTakeaway').textContent = takeaway;
+
+  showCostReveal(final);
+
+  setTimeout(function() {
+    sc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 300);
+}
+
+function showCostReveal(final) {
+  var humanMins = 20 + cluesUsed * 10;
+  document.getElementById('costHumanTime').textContent = humanMins + ' min';
+
+  var outcome = document.getElementById('costRevOutcome');
+  var note = document.getElementById('costRevNote');
+  var insight = document.getElementById('costInsight');
+
+  if (decision === 'B' && actionChoice === 'B') {
+    outcome.textContent = 'L4.2M protected + expansion in play';
+    outcome.className = 'cost-col-value fraunces positive';
+    note.textContent = 'First mover in the consolidation conversation. Not a point solution.';
+    if (cluesUsed === 0) {
+      insight.textContent = 'Perfect. 3 minutes with Claude surfaced the Palantir announcement, the CTO profile, and the competitive pressure. You walked in as the account head who had done the work. Everyone else walked in with a deck.';
+    } else {
+      insight.textContent = 'Strong outcome. The ' + humanMins + ' min brief surfaced the context that could not come from CRM data alone. The cost: $0.003. The meeting that matters: protected.';
+    }
+  } else if (decision === 'B') {
+    outcome.textContent = 'L4.2M at risk';
+    outcome.className = 'cost-col-value fraunces';
+    note.textContent = 'Right agenda, missed the specific signal that would have set you apart.';
+    insight.textContent = 'Opening with Aviva\'s agenda was right. But without the specific Palantir insight, three other vendors this week may have that opener already. /account-research would have made the question specific, not generic.';
+  } else {
+    outcome.textContent = 'L4.2M at serious risk';
+    outcome.className = 'cost-col-value fraunces negative';
+    note.textContent = 'Vendor in a consolidation programme. The meeting may be the last one.';
+    insight.textContent = 'The CRO score said green. It did not see the board mandate, the CTO\'s track record, or L&G\'s launch. A 3-minute brief costs $0.003. Walking into that meeting without it may cost the account.';
+  }
+
+  var cr = document.getElementById('costReveal');
+  cr.classList.add('show');
+  gsap.fromTo(cr, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.3 });
+
+  var ws = document.getElementById('workshopStrip');
+  ws.classList.add('show');
+  gsap.fromTo(ws, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.6 });
+}
+
+// ── RESET ──
+function resetActivity() {
+  timerPause();
+  timerSeconds = 300;
+  updateTimerDisplay();
+
+  score = 0; cluesUsed = 0; step1Pts = 0; step2Pts = 0; confidencePts = 0;
+  decision = null; actionChoice = null; confidence = null; humanUnlocked = false;
+  step2Marked = false; step3Marked = false;
+  clueUnlocking = [false, false, false];
+  clueUnlocked = [false, false, false];
+  scoreAnimObj.val = 0;
+
+  document.getElementById('trackerScoreNum').textContent = '0';
+  document.getElementById('trackerDenom').textContent = '/ 100';
+
+  var tracker = document.getElementById('scoreTracker');
+  tracker.classList.remove('visible');
+
+  for (var s = 1; s <= 3; s++) {
+    var dot = document.getElementById('trackerDot' + s);
+    dot.classList.remove('active', 'done');
+    dot.textContent = s;
+    var pulse = document.getElementById('trackerPulse' + s);
+    if (pulse) { pulse.style.display = 'none'; }
+    var pts = document.getElementById('trackerPts' + s);
+    if (pts) pts.textContent = '';
+    var step = document.getElementById('trackerStep' + s);
+    step.classList.remove('done-step');
+    if (s < 3) {
+      var line = document.getElementById('trackerLine' + s);
+      if (line) line.classList.remove('done-line');
+    }
+  }
+
+  var step1 = document.getElementById('step1Section');
+  step1.classList.remove('show');
+  step1.style.opacity = '0';
+  step1.style.display = 'none';
+  document.getElementById('decisionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('decisionB').classList.remove('selected-correct','selected-wrong');
+  var df = document.getElementById('decisionFeedback');
+  df.className = 'feedback-box'; df.textContent = '';
+  document.getElementById('reconsiderNudge').classList.remove('show');
+
+  var step2 = document.getElementById('step2Section');
+  step2.classList.remove('show');
+  step2.style.opacity = '0';
+  step2.style.display = 'none';
+  document.getElementById('actionA').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionB').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('actionC').classList.remove('selected-correct','selected-wrong');
+  var af = document.getElementById('actionFeedback');
+  af.className = 'feedback-box'; af.textContent = '';
+
+  var step3 = document.getElementById('step3Section');
+  step3.classList.remove('show');
+  step3.style.opacity = '0';
+  step3.style.display = 'none';
+  document.getElementById('confHigh').classList.remove('selected-correct','selected-wrong');
+  document.getElementById('confLow').classList.remove('selected-correct','selected-wrong');
+  var cf = document.getElementById('confidenceFeedback');
+  cf.className = 'feedback-box'; cf.textContent = '';
+
+  var sc = document.getElementById('scorecard');
+  sc.classList.remove('show');
+  document.getElementById('scorecardNum').textContent = '0';
+  document.getElementById('scorecardBarFill').style.width = '0%';
+
+  var cr = document.getElementById('costReveal');
+  cr.classList.remove('show');
+
+  var ws = document.getElementById('workshopStrip');
+  ws.classList.remove('show');
+
+  for (var i = 0; i < 3; i++) {
+    var locked = document.getElementById('clueLocked' + i);
+    var revealed = document.getElementById('clueRevealed' + i);
+    var card = document.getElementById('clueCard' + i);
+    var btn = document.getElementById('clueBtn' + i);
+    locked.style.display = '';
+    locked.style.opacity = '1';
+    revealed.classList.remove('show');
+    card.classList.remove('unlocked');
+    card.style.borderColor = '';
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Ask Claude';
+  }
+
+  var overlay = document.getElementById('lockOverlay');
+  overlay.style.display = '';
+  overlay.style.opacity = '1';
+  overlay.style.transform = '';
+  var revealBtn = document.getElementById('btnRevealHuman');
+  revealBtn.disabled = false;
+  revealBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Run the brief';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  setTimeout(function() {
+    revealSection('step1Section');
+  }, 100);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', function() {
+  revealSection('step1Section');
+  activateTrackerStep(1);
+  showTracker();
+});
+</script>
+</body>
+</html>
